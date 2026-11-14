@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lumo Core Accessibility Module — Interactive Test Harness</title>
+
+  <!-- Google Fonts Preconnect & Noto Sans Ethiopic -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Ethiopic:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- Load Compiled Lumo Embed SDK (Single File) -->
+  <script src="../packages/embed-sdk/dist/lumo.min.js" defer></script>
+
+  <style>
+    :root {
+      --bg: #0b0c10;
+      --card-bg: #1f2833;
+      --text: #ffffff;
+      --accent: #66fcf1;
+      --focus-ring: #0066cc;
+    }
+
+    body {
+      margin: 0;
+      padding: 24px;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.5;
+    }
+
+    main {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    header {
+      margin-bottom: 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 16px;
+    }
+
+    h1 {
+      font-size: 26px;
+      margin: 0 0 8px;
+      color: var(--accent);
+    }
+
+    p {
+      margin: 0 0 12px;
+      color: #c5c6c7;
+    }
+
+    .player-card {
+      background: var(--card-bg);
+      padding: 16px;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      margin-bottom: 24px;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .info-box {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 16px;
+      border-radius: 6px;
+      border-left: 4px solid var(--accent);
+    }
+
+    .info-box h2 {
+      font-size: 16px;
+      margin: 0 0 8px;
+      color: #ffffff;
+    }
+
+    .info-box ul {
+      margin: 0;
+      padding-left: 20px;
+      font-size: 14px;
+      color: #c5c6c7;
+    }
+
+    .info-box li {
+      margin-bottom: 4px;
+    }
+
+    kbd {
+      background: #333;
+      border: 1px solid #555;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 12px;
+      font-family: monospace;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Lumo Accessible Media Player</h1>
+      <p>Digital Bridge Accessibility Hackathon 2026 — Track 2: Accessible Learning Media</p>
+      <p><strong>Gate Test Harness:</strong> WCAG 2.2 AA compliant, keyboard-operable, dual English/Amharic captions, movable Ethiopian Sign Language overlay, and Audio Description.</p>
+    </header>
+
+    <div class="player-card">
+      <!-- LUMO DROP-IN WEB COMPONENT -->
+      <lumo-player
+        id="sample-player"
+        src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+        title="Lumo Digital Bridge Lesson: Inclusive Web Design"
+        captions-en="captions-en.vtt"
+        captions-am="captions-am.vtt"
+        esl-src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
+        audio-description-src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+        offline-enabled="true">
+      </lumo-player>
+    </div>
+
+    <section class="info-grid" aria-label="Accessibility verification guidelines">
+      <div class="info-box">
+        <h2>Keyboard Shortcuts Map</h2>
+        <ul>
+          <li><kbd>Space</kbd> / <kbd>K</kbd> — Play / Pause toggle</li>
+          <li><kbd>&larr;</kbd> / <kbd>&rarr;</kbd> — Seek back/forward 5s</li>
+          <li><kbd>&uarr;</kbd> / <kbd>&darr;</kbd> — Volume up/down 10%</li>
+          <li><kbd>M</kbd> — Mute / Unmute toggle</li>
+          <li><kbd>C</kbd> — Toggle Captions (Off &rarr; EN &rarr; AM)</li>
+          <li><kbd>S</kbd> — Toggle Sign Language window</li>
+          <li><kbd>D</kbd> — Toggle Audio Description</li>
+          <li><kbd>F</kbd> — Fullscreen toggle</li>
+        </ul>
+      </div>
+
+      <div class="info-box">
+        <h2>Ethiopian Localization (Track 2)</h2>
+        <ul>
+          <li><strong>Amharic Captions:</strong> Rendered with Noto Sans Ethiopic font, LTR script direction, and line-height 1.65.</li>
+          <li><strong>EthSL Window:</strong> Movable overlay with time-sync; draggable via header or arrow keys when focused.</li>
+          <li><strong>Screen Reader Ready:</strong> Live announcements for NVDA, TalkBack, and JAWS.</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

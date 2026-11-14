@@ -1,0 +1,125 @@
+version: '3.8'
+
+services:
+  # Lumo Nginx Edge Gateway & Static Demo Server
+  web:
+    image: nginx:alpine
+    container_name: lumo-web
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - ./docker/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./:/usr/share/nginx/html:ro
+    depends_on:
+      - api
+    networks:
+      - lumo-net
+
+  # Lumo Core REST API (FastAPI)
+  api:
+    build:
+      context: ./services/api
+      dockerfile: Dockerfile
+    container_name: lumo-api
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - LUMO_ENV=production
+      - LUMO_API_KEY=${LUMO_API_KEY:-lumo_dev_key_2026}
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-lumo}:${POSTGRES_PASSWORD:-lumo_secret}@db:5432/${POSTGRES_DB:-lumo_db}
+      - REDIS_URL=redis://redis:6379/0
+      - OLLAMA_HOST=http://ollama:11434
+      - ALLOWED_ORIGINS=*
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - lumo-net
+
+  # Asynchronous Background Processing Worker
+  worker:
+    build:
+      context: ./services/api
+      dockerfile: Dockerfile.worker
+    container_name: lumo-worker
+    restart: unless-stopped
+    environment:
+      - LUMO_ENV=production
+      - REDIS_URL=redis://redis:6379/0
+      - OLLAMA_HOST=http://ollama:11434
+    depends_on:
+      - redis
+    networks:
+      - lumo-net
+
+  # PostgreSQL 16 Relational Database
+  db:
+    image: postgres:16-alpine
+    container_name: lumo-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-lumo}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-lumo_secret}
+      POSTGRES_DB: ${POSTGRES_DB:-lumo_db}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lumo -d lumo_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - lumo-net
+
+  # Redis 7 In-Memory Broker & Cache
+  redis:
+    image: redis:7-alpine
+    container_name: lumo-redis
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - lumo-net
+
+  # Local Open-Source AI Inference Server (Ollama)
+  ollama:
+    image: ollama/ollama:latest
+    container_name: lumo-ollama
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_models:/root/.ollama
+    networks:
+      - lumo-net
+
+  # Lumo Telegram Accessibility Bot
+  telegram-bot:
+    build:
+      context: .
+      dockerfile: apps/telegram-bot/Dockerfile
+    container_name: lumo-telegram-bot
+    restart: unless-stopped
+    environment:
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN:-mock-token-for-dev}
+      - LUMO_API_BASE_URL=http://api:8000/api/v1
+      - LUMO_API_KEY=${LUMO_API_KEY:-lumo_dev_key_2026}
+    depends_on:
+      - api
+    networks:
+      - lumo-net
+
+networks:
+  lumo-net:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  ollama_models:

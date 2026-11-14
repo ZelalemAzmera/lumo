@@ -1,0 +1,21 @@
+{
+  "play": "Play",
+  "pause": "Pause",
+  "back10": "Back 10 seconds",
+  "forward10": "Forward 10 seconds",
+  "speed": "Playback Speed",
+  "captions": "Captions",
+  "signLanguage": "Sign Language",
+  "transcript": "Transcript",
+  "audioDescription": "Audio Description",
+  "fullscreen": "Fullscreen",
+  "help": "Keyboard Help",
+  "close": "Close",
+  "downloadTranscript": "Download Transcript (.txt)",
+  "downloadOffline": "Download for Offline Study",
+  "offlineReady": "Offline package ready",
+  "captionOff": "Off",
+  "captionEn": "English",
+  "captionAm": "Amharic (አማርኛ)",
+  "savedOffline": "Saved on this phone. It will send when you are online."
+}

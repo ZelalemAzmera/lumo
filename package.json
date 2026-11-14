@@ -1,0 +1,28 @@
+{
+  "name": "lumo-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Lumo — Open Accessible Learning Media Module for Digital Bridge Hackathon 2026",
+  "scripts": {
+    "build": "pnpm --filter @lumo/core build && pnpm --filter @lumo/embed-sdk build && pnpm --filter @lumo/offline build && pnpm --filter @lumo/document-processor build",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:python": "python -m pytest services/api/tests apps/telegram-bot/tests",
+    "test:a11y": "playwright test tests/e2e/a11y-gate.spec.ts",
+    "test:all": "pnpm test && pnpm test:python && pnpm test:a11y",
+    "typecheck": "pnpm -r --parallel exec tsc --noEmit"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.10.1",
+    "@playwright/test": "^1.49.0",
+    "@rollup/plugin-commonjs": "^28.0.2",
+    "@rollup/plugin-node-resolve": "^16.0.0",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^12.1.2",
+    "rollup": "^4.28.1",
+    "tslib": "^2.9.1",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  },
+  "license": "MIT"
+}

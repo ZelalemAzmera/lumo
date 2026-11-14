@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lumo — Proof Outside Savanna (demo/blank.html)</title>
+  <!-- 1. Load the module -->
+  <script src="../module/db-player.js" defer></script>
+  <style>
+    /* Intentionally minimal raw HTML page: no Bootstrap, no Savanna CSS */
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #121214;
+      color: #e4e4e7;
+      margin: 0;
+      padding: 40px 20px;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    h1 {
+      font-size: 1.75rem;
+      margin-bottom: 8px;
+      color: #ffffff;
+    }
+    p.note {
+      color: #a1a1aa;
+      margin-bottom: 24px;
+      font-size: 0.95rem;
+    }
+    .event-logger {
+      margin-top: 24px;
+      padding: 16px;
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 0.85rem;
+      color: #facc15;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Proof Outside Savanna — Blank Page Test</h1>
+    <p class="note">
+      This page carries zero host stylesheets. The player mounts via a single script tag and tag placement.
+      It proves Shadow DOM encapsulation and full standalone operability for hackathon judges.
+    </p>
+
+    <!-- 2. Place it -->
+    <db-player
+      src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+      captions="../samples/captions-en.vtt,../samples/captions-am.vtt"
+      sign="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
+      describe="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4"
+      lang="am">
+    </db-player>
+
+    <!-- 3. Optionally, listen to host events -->
+    <div class="event-logger" id="event-log">
+      Host Event Listener: Waiting for db-player events...
+    </div>
+  </div>
+
+  <script>
+    const logger = document.getElementById('event-log');
+    document.addEventListener('db-player:progress', (e) => {
+      logger.textContent = `Event [db-player:progress]: ${e.detail.seconds.toFixed(1)}s (${e.detail.percent}%)`;
+    });
+    document.addEventListener('db-player:prefs', (e) => {
+      logger.textContent = `Event [db-player:prefs]: Size=${e.detail.captionSize}, Position=${e.detail.signPosition}`;
+    });
+    document.addEventListener('db-player:complete', () => {
+      logger.textContent = `Event [db-player:complete]: Lesson completed!`;
+    });
+  </script>
+</body>
+</html>

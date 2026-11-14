@@ -1,0 +1,128 @@
+/* Captions Overlay */
+.lumo-caption-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 0 5% 65px;
+  z-index: 15;
+}
+
+.lumo-cue-box {
+  max-width: 90%;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.lumo-cue-text {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 4px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  word-wrap: break-word;
+  transition: font-size 150ms ease-out;
+}
+
+/* Sizing Tokens */
+.lumo-cue-text.size-100 {
+  font-size: 16px;
+}
+
+.lumo-cue-text.size-150 {
+  font-size: 24px;
+}
+
+.lumo-cue-text.size-200 {
+  font-size: 32px;
+}
+
+/* Contrast Themes */
+.theme-white-black {
+  color: #ffffff;
+  background-color: rgba(0, 0, 0, 0.88);
+}
+
+.theme-yellow-black {
+  color: #ffd700;
+  background-color: rgba(0, 0, 0, 0.95);
+}
+
+.theme-black-white {
+  color: #000000;
+  background-color: #ffffff;
+  border: 2px solid #000000;
+}
+
+/* Specific Ethiopic Fidel Script Typography */
+.lumo-cue-text[lang="am"],
+.lumo-cue-text:lang(am) {
+  font-family: 'Noto Sans Ethiopic', system-ui, -apple-system, sans-serif;
+  line-height: 1.65 !important;
+  letter-spacing: 0 !important;
+  direction: ltr !important; /* Fidel is strictly Left-to-Right */
+  word-break: normal;
+}
+
+/* Interactive Synchronized Transcript Panel */
+.lumo-transcript-panel {
+  position: relative;
+  width: 100%;
+  max-height: 220px;
+  overflow-y: auto;
+  background-color: #12131c;
+  color: #cbd5e1;
+  padding: 12px 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.lumo-transcript-panel[lang="am"] {
+  font-family: 'Noto Sans Ethiopic', system-ui, sans-serif;
+  line-height: 1.65;
+}
+
+.lumo-transcript-cue {
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 4px;
+  transition: background-color 150ms ease;
+}
+
+.lumo-transcript-cue:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.lumo-transcript-cue:focus-visible {
+  outline: 3px solid var(--lumo-focus-ring);
+  outline-offset: 1px;
+}
+
+.lumo-transcript-cue.active {
+  background-color: var(--lumo-primary);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.lumo-transcript-time {
+  font-size: 12px;
+  opacity: 0.8;
+  margin-right: 8px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Reduced Motion Override */
+@media (prefers-reduced-motion: reduce) {
+  .lumo-cue-text,
+  .lumo-transcript-cue {
+    transition: none !important;
+  }
+}

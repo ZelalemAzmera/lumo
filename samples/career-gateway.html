@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lumo Career Gateway — Accessible Job Card</title>
+
+  <!-- Schema.org Structured Data for Job Posting with Accessibility Annotations -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "JobPosting",
+    "title": "Junior Accessibility QA Engineer",
+    "description": "Evaluate digital learning products for WCAG 2.2 AA compliance, assistive technology compatibility, and low-bandwidth optimization.",
+    "identifier": {
+      "@type": "PropertyValue",
+      "name": "ALX Career Gateway",
+      "value": "ALX-A11Y-2026-01"
+    },
+    "datePosted": "2026-11-14",
+    "employmentType": "FULL_TIME",
+    "hiringOrganization": {
+      "@type": "Organization",
+      "name": "ALX Ethiopia & Digital Bridge Partners",
+      "sameAs": "https://www.alxafrica.com"
+    },
+    "jobLocation": {
+      "@type": "Place",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Addis Ababa",
+        "addressRegion": "Addis Ababa",
+        "addressCountry": "ET"
+      }
+    },
+    "accessibilitySummary": "Workplace provides certified Ethiopian Sign Language interpreters, full screen-reader accommodations, and flexible remote work options.",
+    "accessibilityFeature": [
+      "captionsEnabled",
+      "signLanguageInterpretation",
+      "audioDescription",
+      "screenReaderOptimized"
+    ]
+  }
+  </script>
+
+  <style>
+    :root {
+      --bg: #0b1120;
+      --card-bg: #1e293b;
+      --card-border: #334155;
+      --primary: #38bdf8;
+      --primary-hover: #0284c7;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --badge-bg: rgba(56, 189, 248, 0.15);
+      --badge-text: #7dd3fc;
+      --focus-ring: #0284c7;
+    }
+
+    body {
+      margin: 0;
+      padding: 1.5rem;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+    }
+
+    main {
+      max-width: 48rem; /* 768px */
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 1.75rem;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+    }
+
+    /* Fluid Accessible Card */
+    .job-card {
+      background-color: var(--card-bg);
+      border: 0.125rem solid var(--card-border);
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      box-shadow: 0 0.25rem 1.25rem rgba(0, 0, 0, 0.4);
+      margin-bottom: 1.5rem;
+    }
+
+    .card-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .job-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin: 0 0 0.25rem 0;
+    }
+
+    .company-name {
+      color: var(--text-muted);
+      font-size: 1rem;
+    }
+
+    .btn-audio-summary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background-color: var(--badge-bg);
+      color: var(--badge-text);
+      border: 0.0625rem solid var(--primary);
+      padding: 0.625rem 1rem;
+      border-radius: 0.375rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      min-height: 2.75rem; /* 44px */
+    }
+
+    .btn-audio-summary:hover {
+      background-color: var(--primary);
+      color: #0b1120;
+    }
+
+    .btn-audio-summary:focus-visible {
+      outline: 0.1875rem solid var(--focus-ring);
+      outline-offset: 0.125rem;
+    }
+
+    .tags-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 1rem 0;
+    }
+
+    .a11y-badge {
+      display: inline-block;
+      padding: 0.25rem 0.625rem;
+      background-color: rgba(34, 197, 94, 0.15);
+      color: #86efac;
+      border: 0.0625rem solid rgba(34, 197, 94, 0.4);
+      border-radius: 0.25rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .job-details-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+      gap: 1rem;
+      margin: 1.25rem 0;
+      padding: 1rem;
+      background-color: rgba(0, 0, 0, 0.2);
+      border-radius: 0.375rem;
+    }
+
+    .detail-item h2 {
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin: 0 0 0.25rem 0;
+    }
+
+    .detail-item p {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .action-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 1.5rem;
+      align-items: center;
+    }
+
+    .btn-apply {
+      background-color: var(--primary);
+      color: #0b1120;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 0.375rem;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      min-height: 2.75rem;
+    }
+
+    .btn-apply:focus-visible {
+      outline: 0.1875rem solid var(--focus-ring);
+      outline-offset: 0.125rem;
+    }
+
+    .btn-apply:hover {
+      background-color: var(--primary-hover);
+      color: #fff;
+    }
+
+    .certificate-link {
+      color: var(--primary);
+      text-decoration: underline;
+      font-size: 0.95rem;
+      min-height: 2.75rem;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .certificate-link:focus-visible {
+      outline: 0.1875rem solid var(--focus-ring);
+      outline-offset: 0.125rem;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Career Gateway</h1>
+      <p class="subtitle">Digital Bridge Hackathon 2026 · Accessible Employment Matches & Verifiable Credentials</p>
+    </header>
+
+    <article class="job-card" aria-labelledby="job-title-1">
+      <div class="card-header">
+        <div>
+          <h2 id="job-title-1" class="job-title">Junior Accessibility QA Engineer</h2>
+          <div class="company-name">ALX Ethiopia · Addis Ababa (Hybrid / Remote Option)</div>
+        </div>
+        
+        <!-- AUDIO SUMMARY BUTTON -->
+        <button 
+          id="btn-speak-summary" 
+          class="btn-audio-summary" 
+          aria-label="Listen to spoken audio summary of Junior Accessibility QA Engineer job"
+          aria-pressed="false">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+          </svg>
+          <span>Listen to Summary</span>
+        </button>
+      </div>
+
+      <div class="tags-container" aria-label="Workplace accessibility accommodations provided">
+        <span class="a11y-badge">EthSL Interpreter Accompaniment</span>
+        <span class="a11y-badge">NVDA / Screen Reader Friendly</span>
+        <span class="a11y-badge">Flexible Remote Hours</span>
+        <span class="a11y-badge">Ramp & Elevator Accessible</span>
+      </div>
+
+      <p>
+        Join ALX Ethiopia's engineering team to ensure educational software works for all learners.
+        You will execute automated accessibility sweeps, partner with co-designers with lived experience, and verify WebVTT captions and Ethiopian Sign Language integrations.
+      </p>
+
+      <div class="job-details-grid">
+        <div class="detail-item">
+          <h2>Salary Range</h2>
+          <p>25,000 – 35,000 ETB / month</p>
+        </div>
+        <div class="detail-item">
+          <h2>Application Deadline</h2>
+          <p>November 30, 2026</p>
+        </div>
+        <div class="detail-item">
+          <h2>Required Skills</h2>
+          <p>HTML5 Semantics, WCAG 2.2, Assistive Tech</p>
+        </div>
+      </div>
+
+      <div class="action-row">
+        <button class="btn-apply" aria-label="Apply for Junior Accessibility QA Engineer role">Apply for Position</button>
+        
+        <!-- VERIFIABLE CERTIFICATE LINK -->
+        <a 
+          href="https://verify.alx-bridge.org/badge/a11y-track2-cert-2026" 
+          class="certificate-link"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="View verifiable course completion credential (opens in new tab)">
+          <span>Verify Open Badge 3.0 Credential &nearr;</span>
+        </a>
+      </div>
+
+      <div id="sr-status" class="sr-only" aria-live="polite"></div>
+    </article>
+  </main>
+
+  <script>
+    const btnSpeak = document.getElementById('btn-speak-summary');
+    const srStatus = document.getElementById('sr-status');
+    let isSpeaking = false;
+
+    const summaryText = "Job summary: Junior Accessibility QA Engineer at ALX Ethiopia. " +
+      "Salary twenty-five thousand to thirty-five thousand Ethiopian Birr per month. " +
+      "Workplace accommodations include Ethiopian Sign Language interpretation and full screen reader support. " +
+      "Requires knowledge of WCAG 2.2 and HTML semantics.";
+
+    btnSpeak.addEventListener('click', () => {
+      if (!isSpeaking) {
+        if ('speechSynthesis' in window) {
+          const utterance = new SpeechSynthesisUtterance(summaryText);
+          utterance.rate = 0.95;
+          utterance.onend = () => {
+            isSpeaking = false;
+            btnSpeak.setAttribute('aria-pressed', 'false');
+            btnSpeak.querySelector('span').textContent = 'Listen to Summary';
+            srStatus.textContent = 'Audio summary finished.';
+          };
+          window.speechSynthesis.speak(utterance);
+          isSpeaking = true;
+          btnSpeak.setAttribute('aria-pressed', 'true');
+          btnSpeak.querySelector('span').textContent = 'Stop Audio Summary';
+          srStatus.textContent = 'Playing audio summary.';
+        } else {
+          srStatus.textContent = summaryText;
+        }
+      } else {
+        if ('speechSynthesis' in window) {
+          window.speechSynthesis.cancel();
+        }
+        isSpeaking = false;
+        btnSpeak.setAttribute('aria-pressed', 'false');
+        btnSpeak.querySelector('span').textContent = 'Listen to Summary';
+        srStatus.textContent = 'Audio summary stopped.';
+      }
+    });
+  </script>
+</body>
+</html>

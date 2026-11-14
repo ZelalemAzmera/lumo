@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ALX Savanna — Concept with Navigation (Lesson 1)</title>
+  <link rel="stylesheet" href="../assets/css/application_alx.css">
+
+  <!-- ========================================================================= -->
+  <!-- LUMO ACCESSIBILITY MODULE INJECTION (LEVEL 1: SINGLE SCRIPT TAG)          -->
+  <!-- ========================================================================= -->
+  <script src="../../module/db-player.js" defer></script>
+</head>
+<body>
+
+  <!-- Savanna Top Navigation Bar -->
+  <header class="navbar" role="banner">
+    <a href="#" class="navbar-brand">ALX Savanna</a>
+    <div style="font-size: 0.9rem; color: #cbd5e1;">Software Engineering &bull; Cohort 2026</div>
+  </header>
+
+  <!-- Savanna Two-Column Learning Layout -->
+  <div class="layout-container">
+    <!-- Curriculum Sidebar -->
+    <nav class="curriculum-sidebar" aria-label="Curriculum Modules">
+      <h5>Curriculum Navigation</h5>
+      <a href="#" class="curriculum-item active" aria-current="page">1. Accessible Web Architecture</a>
+      <a href="#" class="curriculum-item">2. Semantic HTML &amp; Screen Readers</a>
+      <a href="#" class="curriculum-item">3. WCAG 2.2 Contrast &amp; Focus Rings</a>
+      <a href="#" class="curriculum-item">4. Offline Service Workers &amp; Cache</a>
+    </nav>
+
+    <!-- Main Lesson Content Area -->
+    <main class="lesson-main" id="main-content">
+      <div id="curriculum_navigation_content">
+        <div class="savanna-styles">
+          <h1>Module 1: Accessible Web Architecture</h1>
+          <p class="lead">Understanding inclusive interfaces, keyboard traps, and offline resilience for developing regions.</p>
+
+          <!-- Savanna Banner Image -->
+          <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1000&auto=format&fit=crop&q=80" 
+               alt="Code editor showing accessible HTML structure on a laptop" 
+               class="banner-image">
+
+          <!-- ================================================================= -->
+          <!-- PLUGGED-IN ACCESSIBILITY MODULE (UNDER THE BANNER IMAGE)          -->
+          <!-- ================================================================= -->
+          <div style="margin: 2rem 0;">
+            <db-player
+              src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+              captions="../../samples/captions-en.vtt,../../samples/captions-am.vtt"
+              sign="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
+              describe="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4"
+              lang="am"
+              theme="default">
+            </db-player>
+          </div>
+
+          <!-- Lesson Text Content with Real Section Anchors for RAG (Track 3) -->
+          <h2 id="what-is-shaping-the-future-of-va-work">What is Shaping the Future of Web Work</h2>
+          <p>
+            Assistive technologies depend on deterministic programmatic semantics. When developers use real 
+            <code>&lt;button&gt;</code> elements with distinct accessible names, screen readers like NVDA and TalkBack 
+            can convey state transitions immediately.
+          </p>
+
+          <h2 id="artificial-intelligence-and-the-future-of-va-work">Artificial Intelligence and Accessibility</h2>
+          <p>
+            Automated speech recognition enables first-draft transcripts, but regional languages such as Amharic 
+            require human review in the caption pipeline to correct phonetic nuances and technical jargon.
+          </p>
+
+          <h2 id="what-clients-are-likely-to-value-more-and-more">What Clients Value More and More</h2>
+          <p>
+            Enterprises and public institutions across Africa are increasingly mandating WCAG 2.2 AA compliance 
+            and zero-data offline educational capabilities for rural learners.
+          </p>
+
+          <!-- Complete Button -->
+          <div class="complete-btn-container">
+            <button type="button" class="btn-complete" id="btn-mark-complete">Mark as Complete ✓</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Listen to db-player completion event and celebrate
+    document.addEventListener('db-player:complete', () => {
+      const btn = document.getElementById('btn-mark-complete');
+      if (btn) {
+        btn.style.background = '#198754';
+        btn.textContent = 'Completed (Ready to proceed) ✓';
+      }
+    });
+  </script>
+</body>
+</html>

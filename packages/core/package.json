@@ -1,0 +1,15 @@
+{
+  "name": "@lumo/core",
+  "version": "1.0.0",
+  "description": "Lumo core accessible media player, caption engine, and sign language components",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2"
+  },
+  "license": "MIT"
+}

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ALX Savanna Learning Environment — Lumo Accessibility Integration</title>
+
+  <!-- Savanna Mock Platform Styling -->
+  <style>
+    :root {
+      --savanna-primary: #ea580c;
+      --savanna-dark: #18181b;
+      --savanna-sidebar: #27272a;
+      --savanna-text: #f4f4f5;
+    }
+    body {
+      margin: 0;
+      display: flex;
+      height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--savanna-dark);
+      color: var(--savanna-text);
+    }
+    nav.sidebar {
+      width: 260px;
+      background-color: var(--savanna-sidebar);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid rgba(255,255,255,0.1);
+    }
+    .logo {
+      font-size: 20px;
+      font-weight: bold;
+      color: var(--savanna-primary);
+      margin-bottom: 24px;
+    }
+    .nav-item {
+      padding: 10px 12px;
+      border-radius: 6px;
+      color: #a1a1aa;
+      text-decoration: none;
+      margin-bottom: 4px;
+    }
+    .nav-item.active {
+      background-color: rgba(234, 88, 12, 0.15);
+      color: #fb923c;
+      font-weight: 600;
+    }
+    main.content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 32px 40px;
+    }
+    .header-tag {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--savanna-primary);
+      font-weight: 600;
+    }
+    h1 {
+      margin: 6px 0 16px;
+      font-size: 28px;
+    }
+    .video-container {
+      max-width: 900px;
+      margin-bottom: 24px;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.5);
+    }
+    .callout-box {
+      background: rgba(255,255,255,0.05);
+      border-left: 4px solid var(--savanna-primary);
+      padding: 16px;
+      border-radius: 4px;
+      max-width: 900px;
+      margin-top: 24px;
+      font-size: 14px;
+      color: #d4d4d8;
+    }
+  </style>
+
+  <!-- STEP 1: LOAD NOTO SANS ETHIOPIC & LUMO SDK (Total 2 Lines Added) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Ethiopic:wght@400;600&display=swap" rel="stylesheet">
+  <script src="../packages/embed-sdk/dist/lumo.min.js" defer></script>
+</head>
+<body>
+  <nav class="sidebar" aria-label="Savanna Course Navigation">
+    <div class="logo">ALX Savanna</div>
+    <a href="#" class="nav-item">Dashboard</a>
+    <a href="#" class="nav-item active" aria-current="page">Course Modules</a>
+    <a href="#" class="nav-item">Peer Review</a>
+    <a href="#" class="nav-item">Career Gateway</a>
+  </nav>
+
+  <main class="content">
+    <span class="header-tag">Module 1 · Technical Foundations</span>
+    <h1>Building Inclusive Technology for Emerging Markets</h1>
+    <p>Watch the lecture below. Keyboard shortcuts and accessibility controls are enabled.</p>
+
+    <!-- STEP 2: REPLACE NATIVE <VIDEO> WITH <LUMO-PLAYER> -->
+    <div class="video-container">
+      <lumo-player
+        src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+        title="ALX Savanna Lesson: Inclusive Web Development"
+        captions-en="captions-en.vtt"
+        captions-am="captions-am.vtt"
+        esl-src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
+        audio-description-src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+        offline-enabled="true">
+      </lumo-player>
+    </div>
+
+    <div class="callout-box" role="note">
+      <strong>Savanna Platform Engineering Note:</strong>
+      This integration required <strong>zero changes</strong> to Savanna's routing, server logic, or existing stylesheet.
+      The `<lumo-player>` Web Component operates inside open Shadow DOM, ensuring total style isolation.
+    </div>
+  </main>
+</body>
+</html>

@@ -1,0 +1,21 @@
+{
+  "play": "አጫውት",
+  "pause": "አቁም",
+  "back10": "10 ሰከንድ ወደ ኋላ",
+  "forward10": "10 ሰከንድ ወደ ፊት",
+  "speed": "የማጫወቻ ፍጥነት",
+  "captions": "የትርጉም ጽሑፍ (CC)",
+  "signLanguage": "የምልክት ቋንቋ (ESL)",
+  "transcript": "የንግግር ጽሑፍ (Transcript)",
+  "audioDescription": "የድምጽ ማብራሪያ (AD)",
+  "fullscreen": "ሙሉ ማያ",
+  "help": "የቁልፍ ሰሌዳ እገዛ",
+  "close": "ዝጋ",
+  "downloadTranscript": "ጽሑፉን አውርድ (.txt)",
+  "downloadOffline": "ያለ ኢንተርኔት ለማንበብ አውርድ",
+  "offlineReady": "ፋይሉ ዝግጁ ነው",
+  "captionOff": "ጠፍቷል",
+  "captionEn": "እንግሊዝኛ",
+  "captionAm": "አማርኛ",
+  "savedOffline": "በዚህ ስልክ ላይ ተቀምጧል። ኢንተርኔት ሲያገኙ ይላካል።"
+}

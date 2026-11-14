@@ -1,0 +1,17 @@
+{
+  "name": "@lumo/embed-sdk",
+  "version": "1.0.0",
+  "description": "Lumo single-file JavaScript drop-in embed SDK for host learning platforms",
+  "main": "dist/lumo.min.js",
+  "scripts": {
+    "build": "rollup -c",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@lumo/core": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2"
+  },
+  "license": "MIT"
+}

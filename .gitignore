@@ -1,0 +1,16 @@
+node_modules
+dist
+.pytest_cache
+.turbo
+.next
+.venv
+__pycache__
+*.pyc
+.env
+.env.local
+.DS_Store
+Thumbs.db
+test-results
+playwright-report
+!packages/embed-sdk/dist/
+

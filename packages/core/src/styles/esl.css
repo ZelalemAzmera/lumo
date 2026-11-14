@@ -1,0 +1,113 @@
+/* Ethiopian Sign Language (ESL) Floating Modal Dialog */
+.lumo-esl-dialog {
+  position: absolute;
+  bottom: 70px;
+  right: 16px;
+  width: 220px;
+  height: 280px;
+  min-width: 180px;
+  min-height: 240px;
+  max-width: 50%;
+  max-height: 70%;
+  background-color: #12131c;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--lumo-border-radius);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.7), 0 8px 10px -6px rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 30;
+  touch-action: none;
+  outline: none;
+}
+
+.lumo-esl-dialog:focus-visible {
+  border-color: var(--lumo-focus-ring);
+  outline: 3px solid var(--lumo-focus-ring);
+  outline-offset: 2px;
+}
+
+.lumo-esl-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  background-color: rgba(26, 60, 110, 0.9);
+  color: #ffffff;
+  cursor: grab;
+  user-select: none;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.lumo-esl-header:active {
+  cursor: grabbing;
+}
+
+.lumo-esl-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lumo-esl-close-btn {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.lumo-esl-close-btn:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.lumo-esl-close-btn:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 1px;
+}
+
+.lumo-esl-body {
+  flex: 1;
+  position: relative;
+  background-color: #000000;
+  overflow: hidden;
+}
+
+.lumo-esl-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Corner Resize Handle */
+.lumo-esl-resize-handle {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 16px;
+  height: 16px;
+  cursor: nwse-resize;
+  background: linear-gradient(135deg, transparent 50%, rgba(255, 255, 255, 0.6) 50%);
+  z-index: 5;
+}
+
+/* Mobile Adaptation (< 768px) */
+@media (max-width: 767px) {
+  .lumo-esl-dialog {
+    width: 150px;
+    height: 200px;
+    min-width: 130px;
+    min-height: 170px;
+    bottom: 80px;
+    right: 8px;
+  }
+}

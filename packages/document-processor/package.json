@@ -1,0 +1,15 @@
+{
+  "name": "@lumo/document-processor",
+  "version": "1.0.0",
+  "description": "Lumo accessible document remediation validator and tag checker",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2"
+  },
+  "license": "MIT"
+}

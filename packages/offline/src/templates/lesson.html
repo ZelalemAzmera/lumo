@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lumo Offline Accessible Lesson Player</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --text: #f8fafc;
+      --accent: #38bdf8;
+      --focus-ring: #0066cc;
+    }
+    body {
+      margin: 0;
+      padding: 16px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, sans-serif;
+      line-height: 1.5;
+    }
+    .player-card {
+      max-width: 720px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      border-radius: 8px;
+      padding: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    }
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      background: #0284c7;
+      color: #fff;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+    h1 {
+      font-size: 20px;
+      margin: 0 0 12px;
+    }
+    audio {
+      width: 100%;
+      margin-bottom: 12px;
+      outline: none;
+    }
+    audio:focus-visible {
+      outline: 3px solid var(--focus-ring);
+    }
+    .controls-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    button {
+      padding: 8px 12px;
+      background: #334155;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      min-height: 44px;
+      min-width: 44px;
+    }
+    button:focus-visible {
+      outline: 3px solid var(--focus-ring);
+      outline-offset: 2px;
+    }
+    button[aria-pressed="true"] {
+      background: #0284c7;
+    }
+    .captions-box {
+      background: #000;
+      border: 1px solid #334155;
+      border-radius: 4px;
+      padding: 12px;
+      min-height: 48px;
+      text-align: center;
+      font-size: 18px;
+      margin-bottom: 16px;
+      color: #ffd700;
+    }
+    .captions-box[lang="am"] {
+      font-family: 'Noto Sans Ethiopic', system-ui, sans-serif;
+      line-height: 1.65;
+    }
+    .transcript-box {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 4px;
+      padding: 12px;
+      max-height: 240px;
+      overflow-y: auto;
+      font-size: 14px;
+    }
+    .cue-line {
+      padding: 4px 6px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .cue-line:hover, .cue-line.active {
+      background: #334155;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <main class="player-card" role="main">
+    <span class="badge">OFFLINE MODE — 100% DISCONNECTED</span>
+    <h1 id="lesson-title">Lesson: Accessible Digital Skills</h1>
+
+    <audio id="audio-player" controls preload="metadata" aria-label="Lesson audio track">
+      <source src="audio.mp3" type="audio/mp3">
+      Your browser does not support audio playback.
+    </audio>
+
+    <div class="controls-row" role="toolbar" aria-label="Offline accessibility controls">
+      <button id="btn-lang" aria-label="CC Captions: English" aria-pressed="true">CC: EN</button>
+      <button id="btn-size" aria-label="Caption font size">Text: 100%</button>
+    </div>
+
+    <div id="live-captions" class="captions-box" role="status" aria-live="polite">
+      Welcome to this accessible offline digital skills lesson.
+    </div>
+
+    <h2>Lesson Transcript</h2>
+    <div id="transcript" class="transcript-box" role="region" aria-label="Full lesson transcript" tabindex="0">
+      <div class="cue-line active" data-start="0.5">00:00 — Welcome to this accessible digital skills lesson.</div>
+      <div class="cue-line" data-start="4.5">00:04 — Today we are learning how to build inclusive software for everyone.</div>
+      <div class="cue-line" data-start="9.0">00:09 — Accessibility is not an afterthought; it is a fundamental human right.</div>
+      <div class="cue-line" data-start="14.0">00:14 — Every student deserves equal access to learning media and career opportunities.</div>
+    </div>
+  </main>
+
+  <script>
+    const audio = document.getElementById('audio-player');
+    const captionsBox = document.getElementById('live-captions');
+    const btnLang = document.getElementById('btn-lang');
+    const btnSize = document.getElementById('btn-size');
+    const cues = document.querySelectorAll('.cue-line');
+
+    let currentLang = 'en';
+    const amharicCues = [
+      "እንኳን ወደዚህ የዲጂታል ክህሎት ትምህርት በደህና መጡ።",
+      "ዛሬ ለሁሉም ተደራሽ የሆነ ሶፍትዌር እንዴት እንደምንገነባ እንማራለን።",
+      "ተደራሽነት ተጨማሪ ምርጫ ሳይሆን መሰረታዊ የሰብአዊ መብት ነው።",
+      "እያንዳንዱ ተማሪ እኩል የመማር እና የሥራ ዕድል የማግኘት መብት አለው።"
+    ];
+    const englishCues = [
+      "Welcome to this accessible digital skills lesson.",
+      "Today we are learning how to build inclusive software for everyone.",
+      "Accessibility is not an afterthought; it is a fundamental human right.",
+      "Every student deserves equal access to learning media and career opportunities."
+    ];
+
+    btnLang.addEventListener('click', () => {
+      currentLang = currentLang === 'en' ? 'am' : 'en';
+      btnLang.textContent = 'CC: ' + currentLang.toUpperCase();
+      btnLang.setAttribute('aria-label', 'CC Captions: ' + (currentLang === 'am' ? 'Amharic' : 'English'));
+      captionsBox.setAttribute('lang', currentLang);
+      updateCueText();
+    });
+
+    let currentSize = 100;
+    btnSize.addEventListener('click', () => {
+      currentSize = currentSize === 100 ? 150 : (currentSize === 150 ? 200 : 100);
+      btnSize.textContent = 'Text: ' + currentSize + '%';
+      captionsBox.style.fontSize = (18 * (currentSize / 100)) + 'px';
+    });
+
+    function updateCueText() {
+      const curTime = audio.currentTime;
+      let idx = 0;
+      if (curTime >= 14.0) idx = 3;
+      else if (curTime >= 9.0) idx = 2;
+      else if (curTime >= 4.5) idx = 1;
+
+      const list = currentLang === 'am' ? amharicCues : englishCues;
+      captionsBox.textContent = list[idx];
+
+      cues.forEach((el, i) => {
+        el.classList.toggle('active', i === idx);
+      });
+    }
+
+    audio.addEventListener('timeupdate', updateCueText);
+
+    cues.forEach((cue) => {
+      cue.addEventListener('click', () => {
+        audio.currentTime = parseFloat(cue.dataset.start);
+        audio.play();
+      });
+    });
+  </script>
+</body>
+</html>
