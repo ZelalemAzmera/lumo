@@ -46,13 +46,15 @@
           <!-- PLUGGED-IN ACCESSIBILITY MODULE (UNDER THE BANNER IMAGE)          -->
           <!-- ================================================================= -->
           <div style="margin: 2rem 0;">
-            <db-player
-              src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-              captions="../../samples/captions-en.vtt,../../samples/captions-am.vtt"
-              sign="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
-              describe="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4"
-              lang="am"
-              theme="default">
+            <!-- 1. load the module -->
+            <script src="../../module/db-player.js" defer></script>
+            <!-- 2. place it -->
+            <db-player 
+              src="test-lesson.mp4" 
+              captions="lesson.en.vtt,lesson.am.vtt" 
+              sign="lesson.ethsl.mp4" 
+              describe="lesson.ad.mp3" 
+              lang="am">
             </db-player>
           </div>
 
