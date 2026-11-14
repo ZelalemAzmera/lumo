@@ -8,6 +8,7 @@
     "telegram-bot": {
       "root": "apps/telegram-bot",
       "runtime": "python",
+      "entrypoint": "bot/webhook.py",
       "bindings": [
         {
           "type": "service",
