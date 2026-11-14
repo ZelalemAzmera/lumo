@@ -28,6 +28,7 @@ app = FastAPI(
 
 
 @app.post("/webhook")
+@app.post("/bot/webhook")
 async def telegram_webhook(request: Request):
     """Processes incoming Telegram updates via HTTP webhook."""
     global bot_app
@@ -43,6 +44,8 @@ async def telegram_webhook(request: Request):
 
 
 @app.get("/")
+@app.get("/bot")
+@app.get("/bot/health")
 async def health():
     return {
         "service": "Lumo Telegram Bot Webhook",

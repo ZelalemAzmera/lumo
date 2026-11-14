@@ -20,7 +20,7 @@ app = FastAPI(
     version=settings.VERSION,
     docs_url="/docs",
     redoc_url="/redoc",
-    openapi_url="/v1/openapi.json",
+    openapi_url="/openapi.json",
     license_info={
         "name": "MIT License",
         "url": "https://opensource.org/licenses/MIT"
@@ -57,11 +57,16 @@ for prefix in ["/v1", "/api/v1"]:
     app.include_router(packages_router, prefix=prefix, tags=["Offline Packages"])
     app.include_router(lessons_router, prefix=prefix, tags=["AI Educator"])
 
+@app.get("/v1/openapi.json", include_in_schema=False)
+async def openapi_v1():
+    return app.openapi()
+
+
 @app.get("/")
 async def root():
     return {
         "message": "Welcome to Lumo Accessibility API. Interactive docs available at /docs.",
         "version": settings.VERSION,
         "docs_url": "/docs",
-        "openapi_url": "/v1/openapi.json"
+        "openapi_url": "/openapi.json"
     }

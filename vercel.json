@@ -21,6 +21,12 @@
   },
   "rewrites": [
     {
+      "source": "/bot/(.*)",
+      "destination": {
+        "service": "telegram-bot"
+      }
+    },
+    {
       "source": "/api/(.*)",
       "destination": {
         "service": "api"
