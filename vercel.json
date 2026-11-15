@@ -2,6 +2,11 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": true,
   "services": {
+    "web": {
+      "root": ".",
+      "buildCommand": "pnpm build",
+      "outputDirectory": "."
+    },
     "api": {
       "root": "services/api",
       "framework": "fastapi"
@@ -43,6 +48,12 @@
       "source": "/openapi.json",
       "destination": {
         "service": "api"
+      }
+    },
+    {
+      "source": "/(.*)",
+      "destination": {
+        "service": "web"
       }
     }
   ]
