@@ -66,18 +66,21 @@
 
   // --- 3. Live Player Studio Inspector ---
   function setupStudioInspector() {
-    const player = document.getElementById('demo-player');
+    const player = document.getElementById('studio-player') || document.getElementById('demo-player');
     if (!player) return;
 
     // Theme selector
     const themeSelect = document.getElementById('select-theme');
     if (themeSelect) {
       themeSelect.addEventListener('change', (e) => {
-        player.setAttribute('theme', e.target.value);
-        const container = player.shadowRoot?.getElementById('player-container');
-        if (container) {
-          container.className = `player-container theme-${e.target.value}`;
-        }
+        const selectedTheme = e.target.value;
+        document.querySelectorAll('db-player').forEach(p => {
+          p.setAttribute('theme', selectedTheme);
+          const container = p.shadowRoot?.getElementById('player-container');
+          if (container) {
+            container.className = `player-container theme-${selectedTheme}`;
+          }
+        });
       });
     }
 
@@ -307,6 +310,21 @@
     });
   }
 
+  // --- 9. Skillgrove Bento Spotlight Glow on Pointer Move ---
+  function setupBentoSpotlights() {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const cards = document.querySelectorAll('.sg-bento-card, .sg-metric-item');
+    cards.forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        card.style.setProperty('--mouse-x', `${x}px`);
+        card.style.setProperty('--mouse-y', `${y}px`);
+      });
+    });
+  }
+
   // Initialize all modules when DOM is ready
   document.addEventListener('DOMContentLoaded', () => {
     initEthiopianDate();
@@ -317,5 +335,6 @@
     setupSavannaSandbox();
     setupCareerGateway();
     setupCopyButtons();
+    setupBentoSpotlights();
   });
 })();

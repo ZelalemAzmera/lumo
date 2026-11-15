@@ -490,7 +490,7 @@ class DbPlayer extends HTMLElement {
 
         <button type="button" id="btn-play" aria-label="${t.play}">${t.play}</button>
         <button type="button" id="btn-back" aria-label="${t.back}">${t.back}</button>
-        <button type="button" id="btn-speed" aria-label="${t.speed}">1.0x</button>
+        <button type="button" id="btn-speed" aria-label="${t.speed} 1.0x">1.0x</button>
         <button type="button" id="btn-cc" aria-pressed="false" aria-label="${t.cc}">${t.cc}</button>
         <button type="button" id="btn-sign" aria-pressed="false" aria-label="${t.sign}">${t.sign}</button>
         <button type="button" id="btn-transcript" aria-expanded="false" aria-label="${t.transcript}">${t.transcript}</button>
@@ -662,6 +662,7 @@ class DbPlayer extends HTMLElement {
       mainVid.playbackRate = speed;
       if (eslVid) eslVid.playbackRate = speed;
       speedBtn.textContent = `${speed}x`;
+      speedBtn.setAttribute('aria-label', `${this.t.speed} ${speed}x`);
       announce(`Speed ${speed}x`);
     });
 

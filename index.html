@@ -6,51 +6,53 @@
   <meta name="description" content="Lumo — Open Accessible Learning Media Infrastructure for ALX Savanna and Digital Education Platforms.">
   <title>Lumo (ሉሞ) — Accessible Learning Media Infrastructure</title>
 
-  <!-- Google Fonts: Inter & Noto Sans Ethiopic -->
+  <!-- Google Fonts: Geist & Noto Sans Ethiopic -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Ethiopic:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Noto+Sans+Ethiopic:wght@400;600;700&display=swap" rel="stylesheet">
 
   <!-- Core Web Component Module (<db-player> and <lumo-player>) -->
   <script src="module/db-player.js" defer></script>
 
-  <!-- Application Stylesheet -->
+  <!-- Design Systems: Skillgrove Framer Theme & Core Application Styles -->
+  <link rel="stylesheet" href="app/css/skillgrove-theme.css">
   <link rel="stylesheet" href="app/css/app.css">
 </head>
-<body>
+<body class="skillgrove-ui">
 
-  <!-- Site Navigation Header -->
-  <header class="site-header" role="banner">
-    <div class="nav-container">
-      <a href="#" class="brand-group" aria-label="Lumo Home">
-        <span class="brand-badge">LUMO</span>
-        <span class="brand-title">Lumo <span class="amharic-sub">(ሉሞ)</span></span>
+  <!-- Floating Glassmorphic Pill Header (Skillgrove Framer Style) -->
+  <header class="sg-floating-nav" role="banner">
+    <div class="sg-nav-pill">
+      <a href="#" class="sg-nav-brand">
+        <div class="sg-nav-logo-mark" aria-hidden="true">L</div>
+        <span>Lumo <span class="sg-ethiopic-badge">(ሉሞ)</span></span>
       </a>
 
       <nav aria-label="Main Navigation">
-        <ul class="header-links">
+        <ul class="sg-nav-menu">
           <li><a href="#studio">Player Studio</a></li>
-          <li><a href="#captions">Caption Studio</a></li>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#captions">Captions</a></li>
           <li><a href="#offline">Offline Lab</a></li>
-          <li><a href="#savanna">Savanna Sandbox</a></li>
-          <li><a href="#careers">Career Gateway</a></li>
-          <li><a href="#developers">API Explorer</a></li>
+          <li><a href="#savanna">Savanna</a></li>
+          <li><a href="#careers">Careers</a></li>
+          <li><a href="#developers">API</a></li>
         </ul>
       </nav>
 
-      <div class="header-actions">
+      <div class="sg-nav-actions">
         <!-- Live Ethiopian Date Chip -->
-        <span class="ethiopian-date-chip" id="ethiopian-date-display" aria-label="Current Ethiopian Calendar Date">
+        <span class="sg-date-chip" id="ethiopian-date-display" aria-label="Current Ethiopian Calendar Date">
           📅 ኅዳር 2019 ዓ.ም
         </span>
 
         <!-- Accessible Read Aloud Button -->
-        <button type="button" class="btn btn-outline" id="btn-listen-page" aria-pressed="false" style="padding: 6px 14px; font-size: 0.85rem;">
-          🔊 <span>Listen to Overview</span>
+        <button type="button" class="sg-btn sg-btn-glass" id="btn-listen-page" aria-pressed="false" style="padding: 6px 12px; font-size: 0.82rem; min-height: 34px;">
+          🔊 <span>Listen</span>
         </button>
 
         <!-- Swagger Docs Direct Link -->
-        <a href="/docs" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="padding: 6px 14px; font-size: 0.85rem;">
+        <a href="/docs" target="_blank" rel="noopener noreferrer" class="sg-btn sg-btn-primary" style="padding: 6px 14px; font-size: 0.82rem; min-height: 34px;">
           API Docs ↗
         </a>
       </div>
@@ -59,50 +61,195 @@
 
   <main id="main-content">
     <!-- Hero Section -->
-    <section class="hero-section" aria-labelledby="hero-heading">
-      <div class="co-design-quote-pill" role="note">
-        <span>🗣️ Co-Designer Voice (21 Oct):</span>
-        <strong class="quote-highlight">"I do not need a special app. I need the one everyone uses to work with my phone."</strong>
-      </div>
+    <section class="sg-hero-section" aria-labelledby="hero-heading">
+      <a href="#studio" class="sg-hero-badge">
+        <span class="sg-badge-tag">NEW</span>
+        <span>✦ Digital Bridge 2026: Accessible Learning Media Suite &rarr;</span>
+      </a>
 
-      <h1 class="hero-title" id="hero-heading">
-        Open Accessibility Infrastructure for <span class="accent">Learning Media</span>
+      <h1 class="sg-hero-title" id="hero-heading">
+        The future of <span class="sg-accent-text">accessible learning</span>
       </h1>
 
-      <p class="hero-subtitle">
-        A single drop-in script tag that equips <strong>ALX Savanna</strong> and any digital learning platform with 
-        Ethiopian Sign Language, Amharic Fidel captions, synchronized audio descriptions, and zero-data offline packages.
+      <p class="sg-hero-subtitle">
+        An open, embeddable accessibility infrastructure that turns <strong>ALX Savanna</strong> and mainstream digital platforms 
+        into universally accessible environments with Ethiopian Sign Language, Amharic Fidel captions, audio descriptions, and zero-data offline packages.
       </p>
 
-      <div class="hero-cta-group">
-        <a href="#studio" class="btn btn-primary">
+      <div class="sg-hero-cta">
+        <a href="#studio" class="sg-btn sg-btn-primary">
           ▶ Test Live Player Studio
         </a>
-        <a href="#savanna" class="btn btn-secondary">
-          🏫 View Savanna Integration
+        <a href="#savanna" class="sg-btn sg-btn-secondary">
+          🏫 Savanna Sandbox
         </a>
-        <a href="demo/blank.html" class="btn btn-outline" target="_blank">
+        <a href="demo/blank.html" class="sg-btn sg-btn-glass" target="_blank">
           📄 Proof Outside Savanna (blank.html) ↗
         </a>
       </div>
 
-      <!-- Real Engineering Metrics -->
-      <div class="metrics-grid" role="region" aria-label="Key Verification Metrics">
-        <div class="metric-card">
-          <div class="metric-val">0</div>
-          <div class="metric-label">axe-core Violations (WCAG 2.2 AA Verified)</div>
+      <!-- Hero Showcase Frame (Live Embedded <db-player>) -->
+      <div class="sg-showcase-frame">
+        <div class="sg-showcase-header">
+          <div class="sg-window-dots">
+            <span class="sg-dot red"></span>
+            <span class="sg-dot yellow"></span>
+            <span class="sg-dot green"></span>
+          </div>
+          <div style="font-family: var(--font-mono); font-size: 0.75rem;">
+            &lt;db-player&gt; &bull; Web Architecture &bull; Amharic &amp; ESL PIP
+          </div>
+          <div style="color: var(--sg-accent-mint); font-size: 0.75rem; font-weight: 600;">
+            ● LIVE ACTIVE
+          </div>
         </div>
-        <div class="metric-card">
-          <div class="metric-val">41.4 KB</div>
-          <div class="metric-label">Standalone Minified Embed SDK Size</div>
+        <div class="sg-showcase-content">
+          <db-player
+            id="demo-player"
+            src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+            captions="samples/captions-en.vtt,samples/captions-am.vtt"
+            sign="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
+            describe="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4"
+            lang="am">
+          </db-player>
         </div>
-        <div class="metric-card">
-          <div class="metric-val">&lt; 10 KB</div>
-          <div class="metric-label">Telegram Transcripts (99.9% Data Reduction)</div>
+      </div>
+
+      <!-- Real Verification Metrics Bar -->
+      <div class="sg-metrics-bar" role="region" aria-label="Key Verification Metrics">
+        <div class="sg-metric-item">
+          <div class="sg-metric-value">0</div>
+          <div class="sg-metric-desc">axe-core Violations (WCAG 2.2 AA Verified)</div>
         </div>
-        <div class="metric-card">
-          <div class="metric-val">100%</div>
-          <div class="metric-label">Operable by Keyboard &amp; Screen Readers</div>
+        <div class="sg-metric-item">
+          <div class="sg-metric-value">41.4 KB</div>
+          <div class="sg-metric-desc">Standalone Minified Embed SDK Size</div>
+        </div>
+        <div class="sg-metric-item">
+          <div class="sg-metric-value">&lt; 10 KB</div>
+          <div class="sg-metric-desc">Telegram Transcripts (99.9% Data Reduction)</div>
+        </div>
+        <div class="sg-metric-item">
+          <div class="sg-metric-value">100%</div>
+          <div class="sg-metric-desc">Operable by Keyboard &amp; Screen Readers</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BENTO GRID SECTION (Skillgrove Signature Layout) -->
+    <section class="app-section" id="features" aria-labelledby="features-heading">
+      <div class="section-wrapper">
+        <div class="sg-section-header">
+          <span class="sg-section-tag">Inclusive Architecture</span>
+          <h2 class="sg-section-title" id="features-heading">Everything you need to level up accessibility</h2>
+          <p class="sg-section-subtitle">
+            Not a separate app for disabled students. The one everyone uses, engineered to work flawlessly for everyone.
+          </p>
+        </div>
+
+        <div class="sg-bento-grid">
+          <!-- Card 1: Dual Fidel & English Captions (col-8) -->
+          <div class="sg-bento-card sg-card-col-8">
+            <div>
+              <div class="sg-card-badge">01 &bull; DUAL-LANGUAGE WEBVTT</div>
+              <h3 class="sg-card-title">Amharic Ethiopic Fidel &amp; English Captions</h3>
+              <p class="sg-card-text">
+                Native WebVTT rendering with proper line-height (1.7) to prevent Ethiopic diacritic clipping. 
+                Supports live font scaling from 100% to 200% with high-contrast yellow-on-black (16.8:1) legibility.
+              </p>
+            </div>
+            <div style="margin-top: 24px; padding: 16px; background: rgba(0,0,0,0.4); border: 1px solid var(--sg-border-subtle); border-radius: 16px; display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-family: var(--font-ethiopic); color: var(--sg-accent-mint); font-size: 1.1rem;">
+                «እንኳን ወደ ዲጂታል ክህሎት ትምህርት በደህና መጡ።»
+              </span>
+              <span class="sg-badge-tag" style="background: rgba(46,245,142,0.15); color: var(--sg-accent-mint); border: 1px solid var(--sg-accent-mint);">
+                SYNC &lt; 35ms
+              </span>
+            </div>
+          </div>
+
+          <!-- Card 2: ESL PIP Video Window (col-4) -->
+          <div class="sg-bento-card sg-card-col-4">
+            <div>
+              <div class="sg-card-badge">02 &bull; SIGN LANGUAGE</div>
+              <h3 class="sg-card-title">Ethiopian Sign Language PIP</h3>
+              <p class="sg-card-text">
+                Dedicated PIP window with frame-accurate video synchronization and WCAG 2.5.7 compliant 4-corner keyboard snapping.
+              </p>
+            </div>
+            <div style="margin-top: 24px; display: flex; gap: 8px;">
+              <span style="font-size: 0.8rem; background: rgba(255,255,255,0.06); padding: 4px 10px; border-radius: 8px;">↖ Top-Left</span>
+              <span style="font-size: 0.8rem; background: rgba(255,255,255,0.06); padding: 4px 10px; border-radius: 8px;">↗ Top-Right</span>
+              <span style="font-size: 0.8rem; background: rgba(255,255,255,0.06); padding: 4px 10px; border-radius: 8px;">↘ Snap (1-4)</span>
+            </div>
+          </div>
+
+          <!-- Card 3: Synchronized Audio Description (col-4) -->
+          <div class="sg-bento-card sg-card-col-4">
+            <div>
+              <div class="sg-card-badge">03 &bull; AUDIO DESCRIPTION</div>
+              <h3 class="sg-card-title">Synchronized AD &amp; TTS Fallback</h3>
+              <p class="sg-card-text">
+                Dual secondary audio track with automatic Web Speech API text-to-speech fallback when bandwidth cannot stream video.
+              </p>
+            </div>
+            <div style="margin-top: 20px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--sg-accent-mint);">
+              🎙️ Press <kbd style="background: #181b1a; padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.15);">D</kbd> to toggle live AD
+            </div>
+          </div>
+
+          <!-- Card 4: Sub-10MB Offline Package (col-8) -->
+          <div class="sg-bento-card sg-card-col-8">
+            <div>
+              <div class="sg-card-badge">04 &bull; ZERO-DATA RESILIENCE</div>
+              <h3 class="sg-card-title">Sub-10MB Zero-Data Offline PWA Package</h3>
+              <p class="sg-card-text">
+                Packaged lessons (1.8 MB total) cached in IndexedDB. Disabled learners can study uninterrupted on 2G networks, 
+                and all answers submitted offline automatically synchronize once reconnected.
+              </p>
+            </div>
+            <div style="margin-top: 24px; display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
+              <span style="font-size: 0.85rem; color: var(--sg-text-muted);">
+                📊 97.2% reduction vs standard 65MB video streams.
+              </span>
+              <a href="#offline" class="sg-btn sg-btn-secondary" style="min-height: 36px; padding: 6px 14px; font-size: 0.82rem;">
+                Open Bandwidth Meter &rarr;
+              </a>
+            </div>
+          </div>
+
+          <!-- Card 5: Telegram Gateway (col-6) -->
+          <div class="sg-bento-card sg-card-col-6">
+            <div>
+              <div class="sg-card-badge">05 &bull; LOW-BANDWIDTH ACCESS</div>
+              <h3 class="sg-card-title">Telegram Bot Gateway (@LumoAccessibilityBot)</h3>
+              <p class="sg-card-text">
+                Deliver full lesson transcripts, caption lookups, and accessible audio clips through zero-rated Telegram social bundles for under 10 KB of data.
+              </p>
+            </div>
+            <div style="margin-top: 20px;">
+              <a href="https://t.me/LumoAccessibilityBot" target="_blank" class="sg-btn sg-btn-glass" style="min-height: 36px; padding: 6px 14px; font-size: 0.82rem;">
+                🤖 Open Telegram Bot ↗
+              </a>
+            </div>
+          </div>
+
+          <!-- Card 6: Savanna Drop-In Integration (col-6) -->
+          <div class="sg-bento-card sg-card-col-6">
+            <div>
+              <div class="sg-card-badge">06 &bull; SINGLE LINE OF CODE</div>
+              <h3 class="sg-card-title">Drop-in Savanna LMS Integration</h3>
+              <p class="sg-card-text">
+                Mounts inside <code>savanna/pages/concept-with-navigation.html</code> via Shadow DOM encapsulation. 
+                Zero CSS pollution from host platform stylesheets.
+              </p>
+            </div>
+            <div style="margin-top: 20px;">
+              <a href="#savanna" class="sg-btn sg-btn-glass" style="min-height: 36px; padding: 6px 14px; font-size: 0.82rem;">
+                🏫 Explore Savanna Sandbox &rarr;
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -110,68 +257,88 @@
     <!-- SECTION 1: Interactive Player Studio -->
     <section class="app-section" id="studio" aria-labelledby="studio-heading">
       <div class="section-wrapper">
-        <div class="section-header">
-          <span class="section-tag">Interactive Showcase</span>
-          <h2 class="section-title" id="studio-heading">Live Player Studio (&lt;db-player&gt;)</h2>
-          <p class="section-desc">
-            Experience the custom Web Component. Test dual-language captions, corner-snapped Ethiopian Sign Language (ESL), 
-            audio descriptions, and keyboard shortcuts in real time.
+        <div class="sg-section-header">
+          <span class="sg-section-tag">Interactive Workbench</span>
+          <h2 class="sg-section-title" id="studio-heading">Live Player Studio (&lt;db-player&gt;)</h2>
+          <p class="sg-section-subtitle">
+            Configure themes, test caption font sizes, reposition the ESL video, and monitor live screen-reader announcements in real time.
           </p>
         </div>
 
         <div class="studio-grid">
-          <!-- The Real Embedded Player -->
+          <!-- The Embedded Workbench Instance -->
           <div>
-            <db-player
-              id="demo-player"
-              src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-              captions="samples/captions-en.vtt,samples/captions-am.vtt"
-              sign="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
-              describe="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4"
-              lang="am">
-            </db-player>
+            <div class="sg-showcase-frame" style="margin-bottom: 16px;">
+              <div class="sg-showcase-header">
+                <div class="sg-window-dots">
+                  <span class="sg-dot red"></span>
+                  <span class="sg-dot yellow"></span>
+                  <span class="sg-dot green"></span>
+                </div>
+                <div style="font-family: var(--font-mono); font-size: 0.75rem;">
+                  Lumo Interactive Workbench
+                </div>
+                <div style="color: var(--sg-accent-mint); font-size: 0.75rem;">
+                  Shadow DOM Encapsulated
+                </div>
+              </div>
+              <div class="sg-showcase-content">
+                <db-player
+                  id="studio-player"
+                  src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+                  captions="samples/captions-en.vtt,samples/captions-am.vtt"
+                  sign="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
+                  describe="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4"
+                  lang="am">
+                </db-player>
+              </div>
+            </div>
 
             <!-- Live ARIA Monitor -->
-            <div style="margin-top: 16px; padding: 12px 16px; background: #141824; border: 1px solid var(--border-medium); border-radius: 8px; font-size: 0.85rem; color: #facc15; font-family: var(--font-mono);">
+            <div style="padding: 14px 18px; background: #080b09; border: 1px solid var(--sg-border-subtle); border-radius: 14px; font-size: 0.85rem; color: var(--sg-accent-mint); font-family: var(--font-mono);">
               <strong>🔊 Screen Reader Announcer Monitor:</strong>
-              <span id="live-screen-reader-log">Ready. State changes are announced to NVDA / TalkBack via aria-live="polite".</span>
+              <span id="live-screen-reader-log" style="color: #ffffff; opacity: 0.9;">Ready. State changes are announced to NVDA / TalkBack via aria-live="polite".</span>
             </div>
           </div>
 
           <!-- Studio Inspector Controls -->
-          <aside class="studio-inspector" aria-label="Player Settings Inspector">
-            <div class="inspector-group">
-              <h4>High-Contrast Themes</h4>
-              <select id="select-theme" class="cue-text-input" aria-label="Select Contrast Theme">
+          <aside class="sg-inspector-panel" aria-label="Player Settings Inspector">
+            <div class="inspector-group" style="margin-bottom: 20px;">
+              <div class="sg-inspector-label">High-Contrast Themes</div>
+              <select id="select-theme" class="cue-text-input" aria-label="Select Contrast Theme" style="background:#131a16; border:1px solid rgba(255,255,255,0.12); color:#fff; border-radius:8px; padding:8px 12px; width:100%;">
                 <option value="default">Default Dark (15:1)</option>
                 <option value="yellow-black">Yellow on Black (16.8:1 - High Legibility)</option>
                 <option value="white-blue">White on Royal Blue (8.5:1)</option>
               </select>
             </div>
 
-            <div class="inspector-group">
-              <h4>Caption Scale: <span id="caption-size-val" style="color:var(--brand-amber);">100%</span></h4>
-              <input type="range" id="slider-caption-size" min="100" max="200" step="25" value="100" class="scrubber" style="width:100%;" aria-label="Caption Font Size">
-              <span style="font-size:0.75rem; color:var(--text-secondary);">Scales from 16px up to 32px without clipping.</span>
+            <div class="inspector-group" style="margin-bottom: 20px;">
+              <div class="sg-inspector-label">Caption Scale: <span id="caption-size-val" style="color:var(--sg-accent-mint);">100%</span></div>
+              <input type="range" id="slider-caption-size" min="100" max="200" step="25" value="100" class="scrubber" style="width:100%; accent-color:var(--sg-accent-mint);" aria-label="Caption Font Size">
+              <span style="font-size:0.75rem; color:var(--sg-text-muted);">Scales from 16px up to 32px without clipping.</span>
             </div>
 
-            <div class="inspector-group">
-              <h4>ESL Corner Snapping (WCAG 2.2 #4)</h4>
-              <p style="font-size:0.8rem; color:var(--text-secondary); margin-bottom: 8px;">
-                Dragging alone fails WCAG 2.2. Use single-click position snapping:
+            <div class="inspector-group" style="margin-bottom: 20px;">
+              <div class="sg-inspector-label">ESL Corner Snapping (WCAG 2.5.7)</div>
+              <p style="font-size:0.8rem; color:var(--sg-text-muted); margin-bottom: 8px;">
+                Single-click target positioning for motor-impaired learners:
               </p>
               <div class="inspector-buttons">
-                <button type="button" class="btn btn-secondary" data-snap-esl="top-left" style="min-height:36px; padding:6px 10px;">↖ Top-Left</button>
-                <button type="button" class="btn btn-secondary" data-snap-esl="top-right" style="min-height:36px; padding:6px 10px;">↗ Top-Right</button>
-                <button type="button" class="btn btn-secondary" data-snap-esl="bottom-left" style="min-height:36px; padding:6px 10px;">↙ Bottom-Left</button>
-                <button type="button" class="btn btn-secondary" data-snap-esl="bottom-right" style="min-height:36px; padding:6px 10px;">↘ Bottom-Right</button>
+                <button type="button" class="sg-btn sg-btn-secondary" data-snap-esl="top-left" style="min-height:36px; padding:6px 10px; font-size:0.8rem;">↖ Top-Left</button>
+                <button type="button" class="sg-btn sg-btn-secondary" data-snap-esl="top-right" style="min-height:36px; padding:6px 10px; font-size:0.8rem;">↗ Top-Right</button>
+                <button type="button" class="sg-btn sg-btn-secondary" data-snap-esl="bottom-left" style="min-height:36px; padding:6px 10px; font-size:0.8rem;">↙ Bottom-Left</button>
+                <button type="button" class="sg-btn sg-btn-secondary" data-snap-esl="bottom-right" style="min-height:36px; padding:6px 10px; font-size:0.8rem;">↘ Bottom-Right</button>
               </div>
             </div>
 
             <div class="inspector-group">
-              <h4>Keyboard Reference</h4>
-              <p style="font-size:0.82rem; color:var(--text-secondary); line-height:1.5;">
-                <kbd>Space</kbd> Play/Pause &bull; <kbd>C</kbd> Captions &bull; <kbd>S</kbd> ESL &bull; <kbd>D</kbd> Audio Description &bull; <kbd>M</kbd> Mute &bull; <kbd>?</kbd> Help
+              <div class="sg-inspector-label">Keyboard Reference</div>
+              <p style="font-size:0.82rem; color:var(--sg-text-muted); line-height:1.6;">
+                <kbd style="background:#1a211d; padding:2px 6px; border-radius:4px; color:#fff;">Space</kbd> Play/Pause &bull; 
+                <kbd style="background:#1a211d; padding:2px 6px; border-radius:4px; color:#fff;">C</kbd> Captions &bull; 
+                <kbd style="background:#1a211d; padding:2px 6px; border-radius:4px; color:#fff;">S</kbd> ESL &bull; 
+                <kbd style="background:#1a211d; padding:2px 6px; border-radius:4px; color:#fff;">D</kbd> AD &bull; 
+                <kbd style="background:#1a211d; padding:2px 6px; border-radius:4px; color:#fff;">?</kbd> Help
               </p>
             </div>
           </aside>
@@ -182,27 +349,28 @@
     <!-- SECTION 2: Caption Pipeline & Studio -->
     <section class="app-section" id="captions" aria-labelledby="captions-heading">
       <div class="section-wrapper">
-        <div class="section-header">
-          <span class="section-tag">Section 5 Requirement</span>
-          <h2 class="section-title" id="captions-heading">The Caption Pipeline &amp; Correction Studio</h2>
-          <p class="section-desc">
-            Amharic speech recognition models require human post-editing. This interactive studio shows where captions originate, 
-            allows instructors to refine text and timestamps, and exports clean WebVTT files.
+        <div class="sg-section-header">
+          <span class="sg-section-tag">Fidel Typography</span>
+          <h2 class="sg-section-title" id="captions-heading">Caption Pipeline &amp; Correction Studio</h2>
+          <p class="sg-section-subtitle">
+            Amharic speech recognition models require human post-editing. Refine cues, review Ethiopic timestamps, and export clean WebVTT files.
           </p>
         </div>
 
-        <div class="caption-studio-card">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:12px;">
+        <div class="sg-workbench-box">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
             <div>
-              <strong style="color:#ffffff;">Lesson: Web Architecture (Amharic Transcription)</strong>
-              <span style="font-size:0.85rem; color:var(--brand-amber); display:block;">Model: OpenAI Whisper Medium / Local CTC Fine-Tuned</span>
+              <strong style="color:#ffffff; font-size:1.1rem;">Lesson: Web Architecture (Amharic Transcription)</strong>
+              <span style="font-size:0.85rem; color:var(--sg-accent-mint); display:block; font-family:var(--font-mono); margin-top:2px;">
+                Model: Local CTC Fine-Tuned / Whisper Medium
+              </span>
             </div>
             <div style="display:flex; gap:10px;">
-              <button type="button" class="btn btn-secondary" id="btn-add-cue" style="min-height:36px; padding:6px 12px;">
+              <button type="button" class="sg-btn sg-btn-secondary" id="btn-add-cue" style="min-height:36px; padding:6px 14px; font-size:0.82rem;">
                 ➕ Add Cue
               </button>
-              <button type="button" class="btn btn-primary" id="btn-export-vtt" style="min-height:36px; padding:6px 14px;">
-                📥 Export to WebVTT (.vtt)
+              <button type="button" class="sg-btn sg-btn-primary" id="btn-export-vtt" style="min-height:36px; padding:6px 16px; font-size:0.82rem;">
+                📥 Export WebVTT (.vtt)
               </button>
             </div>
           </div>
@@ -216,10 +384,10 @@
     <!-- SECTION 3: Offline Lab & Bandwidth Calculator -->
     <section class="app-section" id="offline" aria-labelledby="offline-heading">
       <div class="section-wrapper">
-        <div class="section-header">
-          <span class="section-tag">Connectivity Equity</span>
-          <h2 class="section-title" id="offline-heading">Offline Lab &amp; Bandwidth Calculator</h2>
-          <p class="section-desc">
+        <div class="sg-section-header">
+          <span class="sg-section-tag">Connectivity Equity</span>
+          <h2 class="sg-section-title" id="offline-heading">Offline Lab &amp; Bandwidth Calculator</h2>
+          <p class="sg-section-subtitle">
             In rural Ethiopia, mobile data is costly and unstable. See how Lumo reduces bandwidth by up to 99.9% while 
             enabling true zero-connection learning.
           </p>
@@ -227,44 +395,44 @@
 
         <!-- Bandwidth Meters -->
         <div class="bandwidth-meter-grid">
-          <div class="bandwidth-box">
-            <span style="color:var(--text-secondary); font-size:0.9rem;">Standard 1080p Video Stream</span>
-            <div class="bandwidth-size" style="color:var(--brand-ruby);">65.0 MB</div>
-            <p style="font-size:0.85rem; color:var(--text-secondary);">Drains mobile credit quickly; frequently buffers and fails on 2G/3G.</p>
-            <div class="bandwidth-bar"><div class="bandwidth-fill" style="width: 100%; background: var(--brand-ruby);"></div></div>
+          <div class="bandwidth-box" style="background: #080b09; border: 1px solid var(--sg-border-subtle); border-radius: 20px; padding: 24px;">
+            <span style="color:var(--sg-text-muted); font-size:0.9rem;">Standard 1080p Video Stream</span>
+            <div class="bandwidth-size" style="color:var(--sg-accent-ruby); font-family: var(--font-geist);">65.0 MB</div>
+            <p style="font-size:0.85rem; color:var(--sg-text-secondary);">Drains mobile credit quickly; frequently buffers and fails on 2G/3G.</p>
+            <div class="bandwidth-bar"><div class="bandwidth-fill" style="width: 100%; background: var(--sg-accent-ruby);"></div></div>
           </div>
 
-          <div class="bandwidth-box highlight">
-            <span style="color:var(--brand-amber); font-weight:700; font-size:0.9rem;">Lumo Audio + HTML Offline Bundle</span>
-            <div class="bandwidth-size" style="color:var(--brand-amber);">1.8 MB</div>
-            <p style="font-size:0.85rem; color:var(--text-secondary);">97.2% data reduction. Download once via Service Worker, study indefinitely.</p>
-            <div class="bandwidth-bar"><div class="bandwidth-fill" style="width: 12%; background: var(--brand-amber);"></div></div>
+          <div class="bandwidth-box highlight" style="background: rgba(46,245,142,0.03); border: 1px solid var(--sg-accent-mint); border-radius: 20px; padding: 24px;">
+            <span style="color:var(--sg-accent-mint); font-weight:600; font-size:0.9rem;">Lumo Audio + HTML Offline Bundle</span>
+            <div class="bandwidth-size" style="color:var(--sg-accent-mint); font-family: var(--font-geist);">1.8 MB</div>
+            <p style="font-size:0.85rem; color:var(--sg-text-secondary);">97.2% data reduction. Download once via Service Worker, study indefinitely.</p>
+            <div class="bandwidth-bar"><div class="bandwidth-fill" style="width: 12%; background: var(--sg-accent-mint);"></div></div>
           </div>
 
-          <div class="bandwidth-box">
-            <span style="color:var(--brand-emerald); font-weight:700; font-size:0.9rem;">Lumo Telegram Text Transcript</span>
-            <div class="bandwidth-size" style="color:var(--brand-emerald);">8.4 KB</div>
-            <p style="font-size:0.85rem; color:var(--text-secondary);">99.98% reduction. Accessible over 0-rated social messaging packages.</p>
-            <div class="bandwidth-bar"><div class="bandwidth-fill" style="width: 2%; background: var(--brand-emerald);"></div></div>
+          <div class="bandwidth-box" style="background: #080b09; border: 1px solid var(--sg-border-subtle); border-radius: 20px; padding: 24px;">
+            <span style="color:var(--sg-accent-emerald); font-weight:600; font-size:0.9rem;">Lumo Telegram Text Transcript</span>
+            <div class="bandwidth-size" style="color:var(--sg-accent-emerald); font-family: var(--font-geist);">8.4 KB</div>
+            <p style="font-size:0.85rem; color:var(--sg-text-secondary);">99.98% reduction. Accessible over 0-rated social messaging packages.</p>
+            <div class="bandwidth-bar"><div class="bandwidth-fill" style="width: 2%; background: var(--sg-accent-emerald);"></div></div>
           </div>
         </div>
 
         <!-- Airplane Mode Simulator -->
-        <div style="background:var(--bg-surface); border:1px solid var(--border-medium); border-radius:12px; padding:24px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+        <div style="background:#080b09; border:1px solid var(--sg-border-subtle); border-radius:24px; padding:28px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
           <div>
-            <strong style="font-size:1.1rem; color:#fff;">Offline Storage Guarantee (Section 9)</strong>
-            <p style="color:var(--text-secondary); font-size:0.9rem; margin-top:4px;">
-              Answers typed with no signal are preserved locally in IndexedDB and dispatched automatically upon reconnection.
+            <strong style="font-size:1.15rem; color:#fff;">Offline Storage Guarantee</strong>
+            <p style="color:var(--sg-text-secondary); font-size:0.92rem; margin-top:4px;">
+              Answers typed with zero signal are preserved locally in IndexedDB and dispatched automatically upon reconnection.
             </p>
-            <div id="airplane-status-banner" style="display:none; margin-top:10px; color:#facc15; font-size:0.9rem;">
+            <div id="airplane-status-banner" style="display:none; margin-top:10px; color:var(--sg-accent-mint); font-size:0.9rem; font-family: var(--font-mono);">
               ✈️ <em>Simulated Airplane Mode Active: "Saved on this phone. It will send when you are online."</em>
             </div>
           </div>
-          <div style="display:flex; gap:10px; flex-wrap:wrap;">
-            <button type="button" class="btn btn-secondary" id="btn-toggle-airplane">
+          <div style="display:flex; gap:12px; flex-wrap:wrap;">
+            <button type="button" class="sg-btn sg-btn-secondary" id="btn-toggle-airplane">
               ✈️ Simulate Airplane Mode
             </button>
-            <button type="button" class="btn btn-primary" id="btn-download-sample-pack">
+            <button type="button" class="sg-btn sg-btn-primary" id="btn-download-sample-pack">
               📥 Download Offline Package (1.8 MB)
             </button>
           </div>
@@ -275,10 +443,10 @@
     <!-- SECTION 4: Savanna Integration Sandbox -->
     <section class="app-section" id="savanna" aria-labelledby="savanna-heading">
       <div class="section-wrapper">
-        <div class="section-header">
-          <span class="section-tag">Host Platform Sandbox</span>
-          <h2 class="section-title" id="savanna-heading">ALX Savanna Drop-in Integration</h2>
-          <p class="section-desc">
+        <div class="sg-section-header">
+          <span class="sg-section-tag">Host Platform Sandbox</span>
+          <h2 class="sg-section-title" id="savanna-heading">ALX Savanna Drop-in Integration</h2>
+          <p class="sg-section-subtitle">
             "The starter is the host. Treat it as somebody else's site. You add to it. You do not rewrite it." 
             Toggle below to see Savanna's lesson page before and after Lumo.
           </p>
@@ -294,26 +462,26 @@
         </div>
 
         <!-- Before View -->
-        <div id="savanna-view-before" style="display:none; background:#18181b; border:1px solid #3f3f46; border-radius:8px; padding:24px;">
-          <h4 style="color:#ef4444; margin-bottom:12px;">❌ Deficiencies of Standard Embed in Savanna</h4>
-          <p style="color:#d4d4d8; font-size:0.95rem; margin-bottom:16px;">
+        <div id="savanna-view-before" style="display:none; background:#080b09; border:1px solid var(--sg-border-subtle); border-radius:20px; padding:28px;">
+          <h4 style="color:#ef4444; margin-bottom:12px; font-size:1.15rem;">❌ Deficiencies of Standard Embed in Savanna</h4>
+          <p style="color:var(--sg-text-secondary); font-size:0.95rem; margin-bottom:16px;">
             The unmodified Savanna template uses a generic HTML5 video or basic video.js embed with no captions, no Ethiopian Sign Language, 
             and no audio descriptions. Keyboard-only learners face keyboard traps and low-contrast control bars.
           </p>
-          <pre style="background:#09090b; padding:16px; border-radius:6px; color:#f87171; font-size:0.85rem; overflow-x:auto;"><code>&lt;!-- Inaccessible default snippet --&gt;
+          <pre class="sg-code-block" style="color: #f87171;" tabindex="0" role="region" aria-label="Inaccessible Savanna video snippet"><code>&lt;!-- Inaccessible default snippet --&gt;
 &lt;div class="video-container"&gt;
   &lt;video controls src="lesson.mp4"&gt;&lt;/video&gt;
 &lt;/div&gt;</code></pre>
         </div>
 
         <!-- After View -->
-        <div id="savanna-view-after" style="display:block; background:#18181b; border:2px solid var(--brand-amber); border-radius:8px; padding:24px;">
-          <h4 style="color:#10b981; margin-bottom:12px;">✅ Lumo Enhanced: Zero CSS Pollution via Shadow DOM</h4>
-          <p style="color:#d4d4d8; font-size:0.95rem; margin-bottom:16px;">
+        <div id="savanna-view-after" style="display:block; background:#080b09; border:1px solid var(--sg-accent-mint); border-radius:20px; padding:28px; box-shadow: 0 0 30px rgba(46,245,142,0.1);">
+          <h4 style="color:var(--sg-accent-mint); margin-bottom:12px; font-size:1.15rem;">✅ Lumo Enhanced: Zero CSS Pollution via Shadow DOM</h4>
+          <p style="color:var(--sg-text-secondary); font-size:0.95rem; margin-bottom:16px;">
             In <code>savanna/pages/concept-with-navigation.html</code>, inside <code>#curriculum_navigation_content .savanna-styles</code>, 
             add the single script tag and place <code>&lt;db-player&gt;</code>. Savanna's 1.5MB of Bootstrap CSS does not alter Lumo's buttons.
           </p>
-          <pre style="background:#09090b; padding:16px; border-radius:6px; color:#facc15; font-size:0.85rem; overflow-x:auto;"><code>&lt;!-- 1. Load module --&gt;
+          <pre class="sg-code-block" tabindex="0" role="region" aria-label="Accessible Lumo embed snippet"><code>&lt;!-- 1. Load module --&gt;
 &lt;script src="/module/db-player.js" defer&gt;&lt;/script&gt;
 
 &lt;!-- 2. Place component --&gt;
@@ -331,35 +499,39 @@
     <!-- SECTION 5: Career Gateway & Verification -->
     <section class="app-section" id="careers" aria-labelledby="careers-heading">
       <div class="section-wrapper">
-        <div class="section-header">
-          <span class="section-tag">Inclusive Employment</span>
-          <h2 class="section-title" id="careers-heading">Accessible Career Gateway &amp; Open Badges 3.0</h2>
-          <p class="section-desc">
+        <div class="sg-section-header">
+          <span class="sg-section-tag">Inclusive Employment</span>
+          <h2 class="sg-section-title" id="careers-heading">Accessible Career Gateway &amp; Open Badges 3.0</h2>
+          <p class="sg-section-subtitle">
             Bridging disabled graduates into meaningful employment with 200% zoom hardening, text-to-speech job overviews, 
             and cryptographic credential verification.
           </p>
         </div>
 
-        <div class="job-card">
+        <div class="job-card" style="background:#080b09; border:1px solid var(--sg-border-subtle); border-radius:24px; padding:32px;">
           <div class="job-header">
             <div>
-              <div class="job-title">Junior Accessibility QA Tester</div>
-              <div class="job-meta">🏢 Inclusive Tech Africa &bull; Addis Ababa, Ethiopia (Hybrid) &bull; Full-Time</div>
+              <div class="job-title" style="font-size:1.6rem;">Junior Accessibility QA Tester</div>
+              <div class="job-meta" style="color:var(--sg-accent-mint); margin-top:4px;">
+                🏢 Inclusive Tech Africa &bull; Addis Ababa, Ethiopia (Hybrid) &bull; Full-Time
+              </div>
             </div>
-            <button type="button" class="btn btn-outline" id="btn-listen-job" style="padding:6px 12px; font-size:0.85rem;">
+            <button type="button" class="sg-btn sg-btn-glass" id="btn-listen-job" style="padding:6px 14px; font-size:0.85rem;">
               🔊 Listen to Job Summary
             </button>
           </div>
 
-          <p style="color:#d4d4d8; font-size:0.95rem; margin-bottom:16px;">
+          <p style="color:var(--sg-text-secondary); font-size:0.95rem; margin-bottom:16px;">
             Lead automated and manual accessibility audits for learning applications. Work with NVDA, TalkBack, and axe-core to ensure 
             WCAG 2.2 AA compliance for African educational technologies.
           </p>
 
-          <!-- Accommodations Box (Section 5 #8 & Section 11 Privacy Guarantee) -->
-          <div class="job-accommodations-box">
-            <h5>🛡️ Inclusive Workplace Accommodations</h5>
-            <ul style="padding-left:20px; color:#cbd5e1; font-size:0.9rem; line-height:1.6;">
+          <!-- Accommodations Box -->
+          <div class="job-accommodations-box" style="background: rgba(46,245,142,0.04); border: 1px solid rgba(46,245,142,0.3); border-radius: 14px; padding: 20px; margin: 24px 0;">
+            <h5 style="color:var(--sg-accent-mint); font-size:1rem; margin-bottom:10px; display:flex; align-items:center; gap:8px;">
+              🛡️ Inclusive Workplace Accommodations
+            </h5>
+            <ul style="padding-left:20px; color:var(--sg-text-secondary); font-size:0.92rem; line-height:1.65;">
               <li>JAWS &amp; NVDA screen reader enterprise licenses provided.</li>
               <li>Ethiopian Sign Language (ESL) interpretation provided for all team standups and interviews.</li>
               <li>Sensory quiet rooms and flexible scheduling for neurological accommodations.</li>
@@ -367,15 +539,15 @@
           </div>
 
           <!-- Open Badges 3.0 Verification Station -->
-          <div style="margin-top:20px; border-top:1px solid var(--border-medium); padding-top:16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
-            <span style="font-size:0.85rem; color:var(--text-secondary);">
-              🎓 Required Credential: <strong>ALX Certified Accessibility Specialist</strong>
+          <div style="border-top:1px solid var(--sg-border-subtle); padding-top:20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+            <span style="font-size:0.88rem; color:var(--sg-text-muted);">
+              🎓 Required Credential: <strong style="color:#fff;">ALX Certified Accessibility Specialist</strong>
             </span>
-            <button type="button" class="btn btn-secondary" id="btn-verify-badge" style="min-height:36px; padding:6px 12px;">
+            <button type="button" class="sg-btn sg-btn-secondary" id="btn-verify-badge" style="min-height:36px; padding:6px 14px; font-size:0.85rem;">
               🔍 Verify Open Badges 3.0 Signature
             </button>
           </div>
-          <div id="badge-verify-result" style="display:none; margin-top:12px;"></div>
+          <div id="badge-verify-result" style="display:none; margin-top:14px;"></div>
         </div>
       </div>
     </section>
@@ -383,75 +555,83 @@
     <!-- SECTION 6: API Explorer & Code Playground -->
     <section class="app-section" id="developers" aria-labelledby="dev-heading">
       <div class="section-wrapper">
-        <div class="section-header">
-          <span class="section-tag">Developer &amp; Integration Tier</span>
-          <h2 class="section-title" id="dev-heading">API Explorer &amp; Three Integration Levels</h2>
-          <p class="section-desc">
-            Lumo provides three distinct adoption levels to fit any architecture.
+        <div class="sg-section-header">
+          <span class="sg-section-tag">Integration Tier</span>
+          <h2 class="sg-section-title" id="dev-heading">API Explorer &amp; Three Integration Levels</h2>
+          <p class="sg-section-subtitle">
+            Lumo provides three distinct adoption levels to fit any LMS architecture.
           </p>
         </div>
 
-        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:20px;">
+        <div class="sg-api-grid">
           <!-- Level 1 -->
-          <div class="metric-card">
-            <span style="color:var(--brand-amber); font-weight:700;">Level 1: JavaScript Embed</span>
-            <h4 style="color:#fff; margin:6px 0 12px;">One Line of HTML</h4>
-            <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:12px;">
-              Drop onto any static or dynamic page. Zero backend configuration required.
-            </p>
-            <pre style="background:#09090b; padding:12px; border-radius:6px; color:#facc15; font-size:0.8rem; overflow-x:auto;"><code id="code-lvl1">&lt;script src="https://cdn.lumo.et/v1/db-player.js" defer&gt;&lt;/script&gt;
+          <div class="sg-bento-card">
+            <div>
+              <div class="sg-card-badge">LEVEL 1</div>
+              <h4 style="color:#fff; margin:6px 0 12px; font-size:1.3rem;">JavaScript Embed</h4>
+              <p style="font-size:0.88rem; color:var(--sg-text-secondary); margin-bottom:16px;">
+                Drop onto any static or dynamic page. Zero backend configuration required.
+              </p>
+              <pre class="sg-code-block" tabindex="0" role="region" aria-label="Accessible Lumo embed snippet"><code id="code-lvl1">&lt;script src="https://cdn.lumo.et/v1/db-player.js" defer&gt;&lt;/script&gt;
 &lt;db-player src="lesson.mp4" lang="am"&gt;&lt;/db-player&gt;</code></pre>
-            <button type="button" class="btn btn-secondary" data-copy="code-lvl1" style="min-height:32px; font-size:0.75rem; margin-top:10px;">📋 Copy Snippet</button>
+            </div>
+            <button type="button" class="sg-btn sg-btn-secondary" data-copy="code-lvl1" style="min-height:36px; font-size:0.8rem; margin-top:16px; width:fit-content;">📋 Copy Snippet</button>
           </div>
 
           <!-- Level 2 -->
-          <div class="metric-card">
-            <span style="color:var(--brand-amber); font-weight:700;">Level 2: REST API (FastAPI)</span>
-            <h4 style="color:#fff; margin:6px 0 12px;">OpenAPI 3.1.0 &amp; Swagger</h4>
-            <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:12px;">
-              Automated captions, PDF tag auditing, and RAG Q&amp;A tutor endpoints.
-            </p>
-            <pre style="background:#09090b; padding:12px; border-radius:6px; color:#38bdf8; font-size:0.8rem; overflow-x:auto;"><code id="code-lvl2">curl -X GET http://localhost:8000/api/v1/lessons/web101 \
-  -H "X-Lumo-Key: lumo_dev_key_2026"</code></pre>
-            <button type="button" class="btn btn-secondary" data-copy="code-lvl2" style="min-height:32px; font-size:0.75rem; margin-top:10px;">📋 Copy Curl</button>
+          <div class="sg-bento-card">
+            <div>
+              <div class="sg-card-badge">LEVEL 2</div>
+              <h4 style="color:#fff; margin:6px 0 12px; font-size:1.3rem;">REST API (FastAPI)</h4>
+              <p style="font-size:0.88rem; color:var(--sg-text-secondary); margin-bottom:16px;">
+                Automated captions, PDF tag auditing, and RAG Q&amp;A tutor endpoints.
+              </p>
+              <pre class="sg-code-block" style="color:#38bdf8;" tabindex="0" role="region" aria-label="FastAPI curl example"><code id="code-lvl2">curl -X GET https://lumo-omega-pink.vercel.app/api/v1/health \
+  -H "Accept: application/json"</code></pre>
+            </div>
+            <button type="button" class="sg-btn sg-btn-secondary" data-copy="code-lvl2" style="min-height:36px; font-size:0.8rem; margin-top:16px; width:fit-content;">📋 Copy Curl</button>
           </div>
 
           <!-- Level 3 -->
-          <div class="metric-card">
-            <span style="color:var(--brand-amber); font-weight:700;">Level 3: Open Standards</span>
-            <h4 style="color:#fff; margin:6px 0 12px;">Schema.org &amp; Open Badges</h4>
-            <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:12px;">
-              Structured data for web crawlers, search engines, and cryptographic verifiers.
-            </p>
-            <pre style="background:#09090b; padding:12px; border-radius:6px; color:#a78bfa; font-size:0.8rem; overflow-x:auto;"><code>&lt;script type="application/ld+json"&gt;
+          <div class="sg-bento-card">
+            <div>
+              <div class="sg-card-badge">LEVEL 3</div>
+              <h4 style="color:#fff; margin:6px 0 12px; font-size:1.3rem;">Open Standards</h4>
+              <p style="font-size:0.88rem; color:var(--sg-text-secondary); margin-bottom:16px;">
+                Structured data for web crawlers, search engines, and cryptographic verifiers.
+              </p>
+              <pre class="sg-code-block" style="color:#a78bfa;" tabindex="0" role="region" aria-label="Schema.org JSON-LD example"><code>&lt;script type="application/ld+json"&gt;
 {
   "@context": "https://schema.org",
-  "@type": "JobPosting",
-  "title": "Junior Accessibility QA Tester"
+  "@type": "EducationalOccupationalCredential",
+  "name": "ALX Accessibility Specialist"
 }
 &lt;/script&gt;</code></pre>
-            <a href="docs/api-reference.md" class="btn btn-secondary" style="min-height:32px; font-size:0.75rem; margin-top:10px; text-decoration:none;">📘 API Reference</a>
+            </div>
+            <a href="docs/api-reference.md" class="sg-btn sg-btn-secondary" style="min-height:36px; font-size:0.8rem; margin-top:16px; text-decoration:none; width:fit-content;">📘 API Reference</a>
           </div>
         </div>
       </div>
     </section>
   </main>
 
-  <!-- Site Footer -->
-  <footer class="site-footer" role="contentinfo">
-    <p style="margin-bottom:8px;">
-      <strong>Lumo (ሉሞ)</strong> &bull; Digital Bridge Accessibility Hackathon 2026 &bull; Track 2: Accessible Learning Media
-    </p>
-    <p style="font-size:0.85rem; color:var(--text-secondary);">
-      Distributed under the open <a href="LICENSE" style="color:var(--brand-amber); text-decoration:none;">MIT License</a>.
-      Designed with co-designers in Addis Ababa, Ethiopia.
-    </p>
-    <div style="margin-top:12px; display:flex; justify-content:center; gap:16px; font-size:0.85rem;">
-      <a href="CONFORMANCE.md" style="color:#d4d4d8; text-decoration:none;">Conformance Report (VPAT)</a>
-      <a href="docs/one-hour-challenge.md" style="color:#d4d4d8; text-decoration:none;">Judge 45-Min Walkthrough</a>
-      <a href="docs/privacy-policy.md" style="color:#d4d4d8; text-decoration:none;">Privacy Policy</a>
-      <a href="docs/accessibility-statement.md" style="color:#d4d4d8; text-decoration:none;">Accessibility Statement</a>
+  <!-- Site Footer (Skillgrove Clean Style) -->
+  <footer class="sg-footer" role="contentinfo">
+    <div>
+      <div style="font-weight: 600; color: #fff; font-size: 1rem; margin-bottom: 4px;">
+        Lumo (ሉሞ)
+      </div>
+      <p style="font-size:0.82rem; color:var(--sg-text-muted); margin:0;">
+        Digital Bridge Accessibility Hackathon 2026 &bull; Track 2: Accessible Learning Media &bull; Open MIT License
+      </p>
     </div>
+    <ul class="sg-footer-links">
+      <li><a href="CONFORMANCE.md">Conformance (VPAT)</a></li>
+      <li><a href="docs/one-hour-challenge.md">Judge Walkthrough</a></li>
+      <li><a href="docs/privacy-policy.md">Privacy</a></li>
+      <li><a href="docs/accessibility-statement.md">Accessibility Statement</a></li>
+      <li><a href="https://github.com/ZelalemAzmera/lumo" target="_blank" rel="noopener">GitHub ↗</a></li>
+    </ul>
   </footer>
 
   <!-- Application Script -->
