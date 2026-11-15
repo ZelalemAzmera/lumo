@@ -4,6 +4,7 @@
   "services": {
     "web": {
       "root": ".",
+      "installCommand": "pnpm install --no-frozen-lockfile",
       "buildCommand": "pnpm build",
       "outputDirectory": "."
     },
