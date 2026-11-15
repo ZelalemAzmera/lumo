@@ -14,3 +14,5 @@ export * from './esl/ESLWindow';
 export * from './audio-description/ADController';
 export * from './audio-description/TextADFallback';
 export * from './styles/index';
+export * from '@lumo/media-engine';
+

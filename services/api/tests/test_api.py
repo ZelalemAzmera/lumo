@@ -52,6 +52,27 @@ def test_captions_generation_success():
     assert "job_id" in data
     assert data["status"] == "QUEUED"
 
+def test_rate_limiting_enforcement():
+    # Test that exceeding the rate limit triggers 429 TOO MANY REQUESTS
+    from app.core.rate_limit import _request_history
+    import time
+    
+    test_key = settings.DEFAULT_API_KEY
+    # Seed 105 timestamps in history within the last 10 seconds
+    now = time.time()
+    _request_history[test_key] = [now - (i * 0.05) for i in range(105)]
+    
+    response = client.post(
+        "/v1/captions/generate",
+        json={"media_url": "https://example.com/video.mp4", "language": "am"},
+        headers=AUTH_HEADERS
+    )
+    assert response.status_code == 429
+    assert response.json()["detail"]["code"] == "RATE_LIMIT_EXCEEDED"
+    assert "Retry-After" in response.headers
+    # Clean up
+    _request_history.pop(test_key, None)
+
 def test_get_caption_vtt():
     response = client.get("/v1/captions/sample-lesson-am")
     assert response.status_code == 200

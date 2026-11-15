@@ -40,6 +40,10 @@ importers:
         version: 2.1.9(terser@5.51.2)
 
   packages/core:
+    dependencies:
+      '@lumo/media-engine':
+        specifier: workspace:*
+        version: link:../media-engine
     devDependencies:
       typescript:
         specifier: ^5.7.2
@@ -61,11 +65,23 @@ importers:
         specifier: ^5.7.2
         version: 5.9.3
 
+  packages/media-engine:
+    devDependencies:
+      typescript:
+        specifier: ^5.7.2
+        version: 5.9.3
+
   packages/offline:
     dependencies:
       '@lumo/core':
         specifier: workspace:*
         version: link:../core
+    devDependencies:
+      typescript:
+        specifier: ^5.7.2
+        version: 5.9.3
+
+  packages/resource-discovery:
     devDependencies:
       typescript:
         specifier: ^5.7.2

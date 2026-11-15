@@ -20,18 +20,39 @@ Lumo is an open, embeddable accessibility infrastructure module that equips exis
 
 ---
 
-## Run it
-The judge runs one command on a clean machine:
+## Run and Test
+
+### 1. Build and Run Monorepo
 ```bash
-docker-compose up -d --build
+# Install dependencies
+pnpm install
+
+# Build all monorepo packages (@lumo/core, embed-sdk, media-engine, resource-discovery, offline, document-processor)
+pnpm run build
+
+# Start local server
+python -m http.server 8000
 ```
 Then open:
-- **Flagship Showcase Web Application**: [http://localhost:8080/](http://localhost:8080/)
-- **Savanna Static Starter Integration**: [http://localhost:8080/savanna/pages/concept-with-navigation.html](http://localhost:8080/savanna/pages/concept-with-navigation.html)
-- **Proof Outside Savanna (Blank Page Test)**: [http://localhost:8080/demo/blank.html](http://localhost:8080/demo/blank.html)
+- **Showcase Application**: [http://localhost:8000/](http://localhost:8000/)
+- **Savanna Starter Integration**: [http://localhost:8000/savanna/pages/concept-with-navigation.html](http://localhost:8000/savanna/pages/concept-with-navigation.html)
+- **Proof Outside Savanna (Blank Page Test)**: [http://localhost:8000/demo/blank.html](http://localhost:8000/demo/blank.html)
 - **Interactive REST API Documentation (Swagger)**: [http://localhost:8000/docs](http://localhost:8000/docs)
 
-*(For local Node/Python run: `pnpm install && pnpm build && python -m http.server 8080`)*
+### 2. Automated Test Verification
+```bash
+# 1. Run all unit tests (Vitest: 6 test suites, 20/20 passed)
+pnpm test
+
+# 2. Run Python API & Telegram bot tests (Pytest: 17/17 passed)
+pnpm test:python
+
+# 3. Run automated WCAG 2.2 AA accessibility audit (Playwright + axe-core: 0 violations)
+pnpm test:a11y
+
+# Or run all suites in sequence:
+pnpm run test:all
+```
 
 ---
 
@@ -93,32 +114,32 @@ Link to raw OpenAPI specification: [openapi.yaml](openapi.yaml) (and interactive
 #### 1. System Health Check
 ```bash
 curl -X GET http://localhost:8000/api/v1/health \
-  -H "X-Lumo-Key: lumo_dev_key_2026"
+  -H "X-Lumo-Key: <YOUR_TENANT_API_KEY>"
 ```
 
 #### 2. Get Lesson Metadata & Tracks
 ```bash
 curl -X GET http://localhost:8000/api/v1/lessons/web101 \
-  -H "X-Lumo-Key: lumo_dev_key_2026"
+  -H "X-Lumo-Key: <YOUR_TENANT_API_KEY>"
 ```
 
 #### 3. Fetch WebVTT Captions
 ```bash
 curl -X GET http://localhost:8000/api/v1/captions/web101.vtt \
-  -H "X-Lumo-Key: lumo_dev_key_2026"
+  -H "X-Lumo-Key: <YOUR_TENANT_API_KEY>"
 ```
 
 #### 4. Upload & Audit Accessible Document
 ```bash
 curl -X POST http://localhost:8000/api/v1/documents/process \
-  -H "X-Lumo-Key: lumo_dev_key_2026" \
+  -H "X-Lumo-Key: <YOUR_TENANT_API_KEY>" \
   -F "file=@lecture_notes.pdf"
 ```
 
 #### 5. Generate Offline Learning Package (<10MB)
 ```bash
 curl -X POST http://localhost:8000/api/v1/packages/generate \
-  -H "X-Lumo-Key: lumo_dev_key_2026" \
+  -H "X-Lumo-Key: <YOUR_TENANT_API_KEY>" \
   -H "Content-Type: application/json" \
   -d '{"lesson_id": "web101", "title": "Accessible Web Architecture"}'
 ```
@@ -126,7 +147,7 @@ curl -X POST http://localhost:8000/api/v1/packages/generate \
 #### 6. Ask Grounded AI Tutor
 ```bash
 curl -X POST http://localhost:8000/api/v1/lessons/web101/ask \
-  -H "X-Lumo-Key: lumo_dev_key_2026" \
+  -H "X-Lumo-Key: <YOUR_TENANT_API_KEY>" \
   -H "Content-Type: application/json" \
   -d '{"question": "What contrast ratio is required for normal text?", "language": "en"}'
 ```

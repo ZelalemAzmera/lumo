@@ -4,7 +4,7 @@
   "private": true,
   "description": "Lumo — Open Accessible Learning Media Module for Digital Bridge Hackathon 2026",
   "scripts": {
-    "build": "pnpm --filter @lumo/core build && pnpm --filter @lumo/embed-sdk build && pnpm --filter @lumo/offline build && pnpm --filter @lumo/document-processor build",
+    "build": "pnpm --filter @lumo/media-engine build && pnpm --filter @lumo/resource-discovery build && pnpm --filter @lumo/core build && pnpm --filter @lumo/embed-sdk build && pnpm --filter @lumo/offline build && pnpm --filter @lumo/document-processor build",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:python": "python -m pytest services/api/tests apps/telegram-bot/tests",

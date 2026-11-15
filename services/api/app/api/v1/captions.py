@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 import uuid
 from app.schemas.captions import CaptionGenerateRequest, CaptionJobResponse
 from app.core.security import verify_api_key
+from app.core.rate_limit import rate_limit
 
 router = APIRouter()
 
@@ -15,7 +16,8 @@ CAPTIONS_STORE = {
 @router.post("/captions/generate", response_model=CaptionJobResponse, status_code=202)
 async def generate_captions(
     payload: CaptionGenerateRequest,
-    api_key: str = Depends(verify_api_key)
+    api_key: str = Depends(verify_api_key),
+    _limiter: None = Depends(rate_limit(max_requests=100, window_seconds=60))
 ):
     """Submit a video/audio media URL for automated caption generation"""
     job_id = f"cap_{uuid.uuid4().hex[:12]}"

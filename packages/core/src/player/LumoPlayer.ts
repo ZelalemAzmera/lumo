@@ -6,6 +6,7 @@ import { ESLWindow } from '../esl/ESLWindow';
 import { ADController } from '../audio-description/ADController';
 import { formatTimeDisplay, formatTimeSpoken } from '../utils/formatTime';
 import { LUMO_CORE_STYLES } from '../styles/index';
+import { LumoMediaEngine, Html5MediaEngine } from '@lumo/media-engine';
 
 // SVG Icons
 const ICONS = {
@@ -47,6 +48,7 @@ export class LumoPlayer extends HTMLElement {
   private eslWindow!: ESLWindow;
   private adController!: ADController;
   private keyboardHandler!: KeyboardHandler;
+  public mediaEngine!: LumoMediaEngine;
 
   // Control elements
   private btnPlay!: HTMLButtonElement;
@@ -98,6 +100,9 @@ export class LumoPlayer extends HTMLElement {
     }
 
     this.container.appendChild(this.video);
+
+    // Standardized media engine abstraction
+    this.mediaEngine = new Html5MediaEngine(this.video);
 
     // Announcer live region
     this.announcer = new Announcer(this.container);

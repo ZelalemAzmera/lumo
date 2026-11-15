@@ -1094,11 +1094,14 @@ class CanonicalLumoPlayer extends HTMLElement {
 
 // Auto-register Canonical Web Component under BOTH specifications:
 if (typeof window !== 'undefined' && typeof customElements !== 'undefined') {
+  class DbPlayerElement extends CanonicalLumoPlayer {}
+  class LumoPlayerElement extends CanonicalLumoPlayer {}
+
   if (!customElements.get('db-player')) {
-    customElements.define('db-player', CanonicalLumoPlayer);
+    customElements.define('db-player', DbPlayerElement);
   }
   if (!customElements.get('lumo-player')) {
-    customElements.define('lumo-player', CanonicalLumoPlayer);
+    customElements.define('lumo-player', LumoPlayerElement);
   }
 }
 

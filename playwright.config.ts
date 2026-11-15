@@ -6,7 +6,7 @@ export default defineConfig({
   fullyParallel: false,
   reporter: 'list',
   use: {
-    baseURL: 'http://127.0.0.1:8080',
+    baseURL: 'http://127.0.0.1:8000',
     trace: 'on-first-retry'
   },
   projects: [
@@ -19,9 +19,9 @@ export default defineConfig({
     }
   ],
   webServer: {
-    command: 'python -m http.server 8080',
-    port: 8080,
-    reuseExistingServer: !process.env.CI,
+    command: 'python -m http.server 8000',
+    port: 8000,
+    reuseExistingServer: true,
     stdout: 'ignore',
     stderr: 'pipe'
   }

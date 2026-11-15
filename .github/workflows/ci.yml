@@ -1,0 +1,59 @@
+name: Lumo CI / Accessibility Gate
+
+on:
+  push:
+    branches: [ main, "feat/**" ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    name: Build, Unit Tests & Accessibility Gate
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Node dependencies
+        run: pnpm install --frozen-lockfile=false
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest pytest-asyncio fastapi uvicorn pydantic httpx python-multipart jinja2 python-telegram-bot
+
+      - name: Build all monorepo packages
+        run: pnpm run build
+
+      - name: Run Vitest Unit Tests
+        run: pnpm test
+
+      - name: Run Python API & Bot Tests
+        run: pnpm test:python
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright WCAG 2.2 AA Accessibility Gate
+        run: |
+          python -m http.server 8000 &
+          sleep 2
+          pnpm test:a11y
+        env:
+          CI: true
