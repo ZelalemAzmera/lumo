@@ -7,6 +7,8 @@ This document provides a comprehensive inventory of all third-party and open-sou
 | Package / Library | Version | Licence | Upstream Repository | Purpose in Lumo |
 | :--- | :--- | :--- | :--- | :--- |
 | **@axe-core/playwright** | `^4.14.0` | MPL-2.0 | [dequelabs/axe-core](https://github.com/dequelabs/axe-core) | Automated WCAG 2.2 AA accessibility test auditing across Shadow DOM |
+| **pa11y** | `^10.0.0` | LGPL-3.0 | [pa11y/pa11y](https://github.com/pa11y/pa11y) | Command-line and scriptable automated accessibility auditing against WCAG 2.2 AA |
+| **video.js** | `^10.4.0` | Apache-2.0 | [videojs/video.js](https://github.com/videojs/video.js) | Underlying open-source media player engine and adapter architecture in `@lumo/media-engine` |
 | **@playwright/test** | `^1.49.0` | Apache-2.0 | [microsoft/playwright](https://github.com/microsoft/playwright) | End-to-end browser automation & keyboard navigation test suite |
 | **vitest** | `^2.1.8` | MIT | [vitest-dev/vitest](https://github.com/vitest-dev/vitest) | Fast unit test runner for parsers, state machines, and discovery |
 | **rollup** | `^4.28.1` | MIT | [rollup/rollup](https://github.com/rollup/rollup) | Zero-dependency bundler producing single-file embed SDK distribution |
