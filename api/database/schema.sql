@@ -50,7 +50,20 @@ CREATE TABLE IF NOT EXISTS institutional_guarantors (
   endorsement_types_json TEXT DEFAULT '[]',
   scope_limitations TEXT,
   verified INTEGER DEFAULT 0,
+  tenant_id TEXT DEFAULT 'default',
   created_at TEXT DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS organization_admins (
+  id TEXT PRIMARY KEY,
+  org_id TEXT NOT NULL,
+  user_id TEXT NOT NULL,
+  email TEXT NOT NULL,
+  role TEXT DEFAULT 'admin',
+  tenant_id TEXT DEFAULT 'default',
+  permissions_json TEXT DEFAULT '["review","approve","revoke","issue"]',
+  created_at TEXT DEFAULT (datetime('now')),
+  FOREIGN KEY (org_id) REFERENCES institutional_guarantors(id)
 );
 
 CREATE TABLE IF NOT EXISTS waas_requests (
@@ -59,15 +72,29 @@ CREATE TABLE IF NOT EXISTS waas_requests (
   guarantor_type TEXT NOT NULL CHECK(guarantor_type IN ('individual','institutional')),
   guarantor_id TEXT,
   purpose TEXT,
-  status TEXT DEFAULT 'pending' CHECK(status IN ('pending','matched','approved','issued','revoked','expired')),
+  status TEXT DEFAULT 'pending' CHECK(status IN ('pending','matched','approved','declined','issued','revoked','expired')),
   consent_applicant INTEGER DEFAULT 0,
   consent_guarantor INTEGER DEFAULT 0,
   scope TEXT,
+  tenant_id TEXT DEFAULT 'default',
   validity_start TEXT,
   validity_end TEXT,
   created_at TEXT DEFAULT (datetime('now')),
   updated_at TEXT DEFAULT (datetime('now')),
   FOREIGN KEY (applicant_id) REFERENCES applicants(id)
+);
+
+CREATE TABLE IF NOT EXISTS consent_tokens (
+  id TEXT PRIMARY KEY,
+  request_id TEXT NOT NULL,
+  token_hash TEXT NOT NULL UNIQUE,
+  guarantor_id TEXT NOT NULL,
+  tenant_id TEXT DEFAULT 'default',
+  expires_at TEXT NOT NULL,
+  used INTEGER DEFAULT 0,
+  used_at TEXT,
+  created_at TEXT DEFAULT (datetime('now')),
+  FOREIGN KEY (request_id) REFERENCES waas_requests(id)
 );
 
 CREATE TABLE IF NOT EXISTS credentials (
@@ -86,6 +113,10 @@ CREATE TABLE IF NOT EXISTS credentials (
   signature TEXT,
   revoked INTEGER DEFAULT 0,
   revocation_reason TEXT,
+  suspended INTEGER DEFAULT 0,
+  suspended_reason TEXT,
+  coordinator_credential_id TEXT,
+  tenant_id TEXT DEFAULT 'default',
   qr_path TEXT,
   created_at TEXT DEFAULT (datetime('now')),
   FOREIGN KEY (waas_request_id) REFERENCES waas_requests(id)

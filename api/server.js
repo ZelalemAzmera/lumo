@@ -17,6 +17,8 @@ const CredentialService = require('./services/credential-service');
 const IdentityService = require('./services/identity-service');
 const MatchingService = require('./services/matching-service');
 const VerificationService = require('./services/verification-service');
+const IssuerCoordinatorAdapter = require('./services/issuer-coordinator-adapter');
+const ConsentService = require('./services/consent-service');
 
 const app = express();
 const PORT = process.env.WAAS_PORT || 3001;
@@ -27,6 +29,8 @@ const credentialService = new CredentialService(db);
 const identityService = new IdentityService(db);
 const matchingService = new MatchingService(db);
 const verificationService = new VerificationService(db);
+const issuerCoordinatorAdapter = new IssuerCoordinatorAdapter(db);
+const consentService = new ConsentService(db, issuerCoordinatorAdapter);
 
 // 2. Security Middleware
 app.use(helmet({
@@ -89,8 +93,8 @@ app.get(['/health', '/api/v1/health'], (req, res) => {
 
 // ── Applicant & WaaS Request Flow ──
 
-// Submit a new guarantee request
-app.post(['/api/v1/waas/request', '/v1/waas/request'], async (req, res) => {
+// Submit a new guarantee request (Generates single-use consent token)
+app.post(['/api/waas/requests', '/api/v1/waas/request', '/v1/waas/request'], async (req, res) => {
   try {
     const fullName = req.body.fullName || req.body.applicantName;
     const phone = req.body.phone || req.body.contact || '+251911000000';
@@ -101,7 +105,8 @@ app.post(['/api/v1/waas/request', '/v1/waas/request'], async (req, res) => {
     const courseRef = req.body.courseRef || req.body.courseId || null;
     const scope = req.body.scope || req.body.consentScope || 'Professional Reference & Guarantee';
     const guarantorType = req.body.guarantorType || req.body.preferredGuarantorType || 'institutional';
-    const guarantorId = req.body.guarantorId || null;
+    const guarantorId = req.body.guarantorId || 'inst-alx-ethiopia';
+    const tenantId = req.headers['x-tenant-id'] || req.body.tenantId || 'default';
     const consentApplicant = req.body.consentApplicant !== undefined
       ? req.body.consentApplicant
       : (req.body.consentGiven !== undefined ? req.body.consentGiven : true);
@@ -129,20 +134,26 @@ app.post(['/api/v1/waas/request', '/v1/waas/request'], async (req, res) => {
       VALUES (?, ?, ?, 'verified', 'AUTO-SYSTEM-INIT', 'waas-system')
     `).run(uuidv4(), applicantId, idRoute);
 
-    // Insert request
+    // Insert request with tenant isolation
     db.prepare(`
       INSERT INTO waas_requests (
         id, applicant_id, guarantor_type, guarantor_id, purpose, scope,
-        status, consent_applicant, consent_guarantor
-      ) VALUES (?, ?, ?, ?, ?, ?, 'pending', 1, 0)
-    `).run(requestId, applicantId, guarantorType, guarantorId, purpose, scope);
+        status, consent_applicant, consent_guarantor, tenant_id
+      ) VALUES (?, ?, ?, ?, ?, ?, 'pending', 1, 0, ?)
+    `).run(requestId, applicantId, guarantorType, guarantorId, purpose, scope, tenantId);
 
-    logAudit('CREATE_REQUEST', 'waas_request', requestId, applicantId, { purpose, guarantorType });
+    // Generate single-use, secure consent link
+    const consentRes = consentService.createConsentToken(requestId, guarantorId, { tenantId });
+
+    logAudit('CREATE_REQUEST', 'waas_request', requestId, applicantId, { purpose, guarantorType, tenantId });
 
     res.status(200).json({
       success: true,
       requestId,
       applicantId,
+      guarantorId,
+      consentToken: consentRes.rawToken,
+      consentUrl: consentRes.consentUrl,
       status: 'pending',
       message: 'Guarantee request submitted successfully and queued for guarantor review.'
     });
@@ -152,10 +163,12 @@ app.post(['/api/v1/waas/request', '/v1/waas/request'], async (req, res) => {
   }
 });
 
-// Retrieve request status
-app.get(['/api/v1/waas/request/:id', '/v1/waas/request/:id'], (req, res) => {
+// Retrieve request status (with tenant isolation)
+app.get(['/api/waas/requests/:id', '/api/v1/waas/request/:id', '/v1/waas/request/:id'], (req, res) => {
   try {
     const { id } = req.params;
+    const reqTenant = req.headers['x-tenant-id'];
+
     const request = db.prepare(`
       SELECT wr.*, a.full_name as applicant_name, a.purpose as applicant_purpose,
              a.id_route, a.lang as applicant_lang
@@ -168,6 +181,15 @@ app.get(['/api/v1/waas/request/:id', '/v1/waas/request/:id'], (req, res) => {
       return res.status(404).json({ error: 'NOT_FOUND', message: 'Guarantee request not found.' });
     }
 
+    // Tenant isolation check
+    if (reqTenant && request.tenant_id && request.tenant_id !== reqTenant && reqTenant !== 'global_admin') {
+      return res.status(403).json({
+        error: 'FORBIDDEN',
+        code: 'TENANT_MISMATCH',
+        message: 'Tenant mismatch: Cannot access records of another tenant organization.'
+      });
+    }
+
     // Check if credential has been issued
     const credential = db.prepare('SELECT waas_id_public, issue_date, expiry_date, verification_status FROM credentials WHERE waas_request_id = ?').get(id);
 
@@ -178,6 +200,7 @@ app.get(['/api/v1/waas/request/:id', '/v1/waas/request/:id'], (req, res) => {
       purpose: request.purpose,
       scope: request.scope,
       status: request.status,
+      tenantId: request.tenant_id,
       guarantorType: request.guarantor_type,
       guarantorId: request.guarantor_id,
       consentApplicant: Boolean(request.consent_applicant),
@@ -187,6 +210,84 @@ app.get(['/api/v1/waas/request/:id', '/v1/waas/request/:id'], (req, res) => {
     });
   } catch (err) {
     res.status(500).json({ error: 'INTERNAL_ERROR', message: err.message });
+  }
+});
+
+// ── Single-Use Consent Link Lifecycle ──
+
+// Inspect consent request via single-use token (Guarantor reviews applicant info)
+app.get(['/api/waas/consent/:token', '/api/v1/waas/consent/:token'], (req, res) => {
+  try {
+    const verified = consentService.verifyConsentToken(req.params.token);
+    res.json({
+      success: true,
+      ...verified
+    });
+  } catch (err) {
+    res.status(err.status || 500).json({
+      error: err.code || 'CONSENT_ERROR',
+      message: err.message,
+      usedAt: err.usedAt,
+      expiredAt: err.expiredAt
+    });
+  }
+});
+
+// Guarantor makes consent decision via single-use token (Replay protected)
+app.post(['/api/waas/consent/:token/decide', '/api/v1/waas/consent/:token/decide'], async (req, res) => {
+  try {
+    const { decision, reason, expiresInDays } = req.body || {};
+    const result = await consentService.decideConsent(req.params.token, decision, {
+      reason,
+      expiresInDays
+    });
+    res.json(result);
+  } catch (err) {
+    res.status(err.status || 500).json({
+      error: err.code || 'DECISION_ERROR',
+      message: err.message
+    });
+  }
+});
+
+// Direct request consent route
+app.post(['/api/waas/requests/:id/consent', '/api/v1/waas/requests/:id/consent'], async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { decision = 'approve', token, reason } = req.body || {};
+
+    if (token) {
+      const result = await consentService.decideConsent(token, decision, { reason });
+      return res.json(result);
+    }
+
+    // Direct guarantor session approval
+    const request = db.prepare('SELECT * FROM waas_requests WHERE id = ?').get(id);
+    if (!request) {
+      return res.status(404).json({ error: 'NOT_FOUND', message: 'Request not found.' });
+    }
+
+    if (decision === 'reject' || decision === 'decline') {
+      db.prepare(`UPDATE waas_requests SET status = 'declined', updated_at = datetime('now') WHERE id = ?`).run(id);
+      logAudit('CONSENT_REJECTED', 'waas_request', id, request.guarantor_id || 'guarantor', { reason });
+      return res.json({ success: true, status: 'declined', message: 'Request declined.' });
+    }
+
+    db.prepare(`UPDATE waas_requests SET status = 'approved', consent_guarantor = 1, updated_at = datetime('now') WHERE id = ?`).run(id);
+    logAudit('CONSENT_APPROVED', 'waas_request', id, request.guarantor_id || 'guarantor', { reason });
+
+    const cred = await issuerCoordinatorAdapter.issueCredential(id, {
+      tenantId: request.tenant_id || 'default'
+    });
+
+    res.json({
+      success: true,
+      status: 'approved',
+      message: 'Request approved and credential issued.',
+      credential: cred
+    });
+  } catch (err) {
+    res.status(err.status || 500).json({ error: err.code || 'ERROR', message: err.message });
   }
 });
 
@@ -458,49 +559,69 @@ app.post(['/api/v1/waas/:id/decline', '/v1/waas/request/:id/decline'], (req, res
 
 // ── Credential Issuance, Public Verification & Revocation ──
 
-// Issue credential after approval
-app.post(['/api/v1/waas/:id/issue', '/v1/waas/request/:id/issue'], async (req, res) => {
+// Issue credential after approval (Via IssuerCoordinatorAdapter)
+app.post(['/api/waas/requests/:id/issue', '/api/v1/waas/:id/issue', '/v1/waas/request/:id/issue'], async (req, res) => {
   try {
-    const result = await credentialService.issue(req.params.id);
-    logAudit('ISSUE_CREDENTIAL', 'credential', result.waasIdPublic, 'waas-issuer', {
-      requestId: req.params.id
+    const tenantId = req.headers['x-tenant-id'] || 'default';
+    const forceLocal = req.body ? req.body.forceLocal : false;
+    const expiresInDays = req.body ? req.body.expiresInDays : 365;
+
+    const result = await issuerCoordinatorAdapter.issueCredential(req.params.id, {
+      tenantId,
+      forceLocal,
+      expiresInDays
     });
-    res.status(200).json({
-      success: true,
-      waasId: result.waasIdPublic,
-      qrCodeDataUrl: result.qrCodeUrl,
-      ...result
+
+    res.status(200).json(result);
+  } catch (err) {
+    res.status(err.status || 500).json({
+      error: err.code || 'ISSUANCE_ERROR',
+      message: err.message,
+      existingWaasId: err.existingWaasId
+    });
+  }
+});
+
+// Retrieve Credential Metadata (Data minimized)
+app.get(['/api/waas/credentials/:id', '/api/v1/waas/credentials/:id'], (req, res) => {
+  try {
+    const { id } = req.params;
+    const cred = db.prepare(`
+      SELECT c.*, a.full_name as applicant_name, wr.purpose, wr.scope as req_scope
+      FROM credentials c
+      JOIN waas_requests wr ON c.waas_request_id = wr.id
+      JOIN applicants a ON wr.applicant_id = a.id
+      WHERE c.id = ? OR c.waas_id_public = ?
+    `).get(id, id);
+
+    if (!cred) {
+      return res.status(404).json({ error: 'NOT_FOUND', message: 'Credential not found.' });
+    }
+
+    res.json({
+      waasId: cred.waas_id_public,
+      credentialType: cred.credential_type,
+      status: cred.verification_status,
+      issuedAt: cred.issue_date,
+      expiresAt: cred.expiry_date,
+      issuer: cred.issuer,
+      purpose: cred.purpose,
+      scope: cred.scope || cred.req_scope,
+      beneficiaryName: cred.applicant_name,
+      revoked: Boolean(cred.revoked),
+      suspended: Boolean(cred.suspended)
     });
   } catch (err) {
-    res.status(err.status || 500).json({ error: err.message || 'Credential issuance failed' });
+    res.status(500).json({ error: 'INTERNAL_ERROR', message: err.message });
   }
 });
 
 // Public verification (No authentication required; strictly data-minimized)
-app.get(['/api/v1/waas/verify/:waasId', '/v1/waas/verify/:waasId'], (req, res) => {
+// Returns all 6 authoritative statuses: VALID, EXPIRED, REVOKED, SUSPENDED, PENDING, INVALID
+app.get(['/api/waas/verify/:credentialId', '/api/v1/waas/verify/:waasId', '/v1/waas/verify/:waasId'], (req, res) => {
   try {
-    const result = verificationService.verify(req.params.waasId);
-    
-    // Enrich with applicant public name & details
-    const cred = db.prepare(`
-      SELECT c.*, a.full_name as applicant_name
-      FROM credentials c
-      JOIN waas_requests wr ON c.waas_request_id = wr.id
-      JOIN applicants a ON wr.applicant_id = a.id
-      WHERE c.waas_id_public = ?
-    `).get(req.params.waasId);
-
-    if (cred) {
-      result.subject = {
-        name: cred.applicant_name,
-        beneficiaryRef: cred.beneficiary_ref
-      };
-      result.signatureValid = Boolean(cred.signature);
-    } else {
-      result.signatureValid = false;
-    }
-
-    result.isValid = Boolean(result.verified);
+    const id = req.params.credentialId || req.params.waasId;
+    const result = issuerCoordinatorAdapter.verifyCredential(id);
     res.json(result);
   } catch (err) {
     res.status(500).json({ error: 'INTERNAL_ERROR', message: err.message });
@@ -508,33 +629,108 @@ app.get(['/api/v1/waas/verify/:waasId', '/v1/waas/verify/:waasId'], (req, res) =
 });
 
 // Revoke a credential (requires authorization)
-app.post(['/api/v1/waas/revoke/:waasId', '/v1/waas/revoke/:waasId'], requireAuth, (req, res) => {
+app.post(['/api/waas/credentials/:id/revoke', '/api/v1/waas/revoke/:waasId', '/v1/waas/revoke/:waasId'], requireAuth, async (req, res) => {
   try {
-    const { waasId } = req.params;
-    const { reason = 'Revoked by authorized guarantor/issuer' } = req.body;
+    const id = req.params.id || req.params.waasId;
+    const { reason = 'Revoked by authorized guarantor/issuer' } = req.body || {};
+    const tenantId = req.headers['x-tenant-id'] || 'default';
 
-    const cred = db.prepare('SELECT * FROM credentials WHERE waas_id_public = ?').get(waasId);
-    if (!cred) {
-      return res.status(404).json({ error: 'NOT_FOUND', message: 'Credential not found.' });
-    }
-
-    db.prepare(`
-      UPDATE credentials
-      SET revoked = 1, revocation_reason = ?, verification_status = 'REVOKED'
-      WHERE waas_id_public = ?
-    `).run(reason, waasId);
-
-    logAudit('REVOKE_CREDENTIAL', 'credential', waasId, req.user.role, { reason });
-
-    res.json({
-      success: true,
-      waasId,
-      status: 'REVOKED',
-      message: 'Credential successfully revoked.'
+    const result = await issuerCoordinatorAdapter.updateStatus(id, 'REVOKED', {
+      action: 'revoke',
+      reason,
+      tenantId
     });
+
+    res.json(result);
   } catch (err) {
-    res.status(500).json({ error: 'INTERNAL_ERROR', message: err.message });
+    res.status(err.status || 500).json({ error: err.code || 'INTERNAL_ERROR', message: err.message });
   }
+});
+
+// Suspend a credential (requires authorization)
+app.post(['/api/waas/credentials/:id/suspend', '/api/v1/waas/suspend/:waasId', '/v1/waas/suspend/:waasId'], requireAuth, async (req, res) => {
+  try {
+    const id = req.params.id || req.params.waasId;
+    const { reason = 'Suspended pending investigation' } = req.body || {};
+    const tenantId = req.headers['x-tenant-id'] || 'default';
+
+    const result = await issuerCoordinatorAdapter.updateStatus(id, 'SUSPENDED', {
+      action: 'suspend',
+      reason,
+      tenantId
+    });
+
+    res.json(result);
+  } catch (err) {
+    res.status(err.status || 500).json({ error: err.code || 'INTERNAL_ERROR', message: err.message });
+  }
+});
+
+// Reinstate a suspended credential (requires authorization)
+app.post(['/api/waas/credentials/:id/reinstate', '/api/v1/waas/reinstate/:waasId', '/v1/waas/reinstate/:waasId'], requireAuth, async (req, res) => {
+  try {
+    const id = req.params.id || req.params.waasId;
+    const { reason = 'Reinstated after review' } = req.body || {};
+    const tenantId = req.headers['x-tenant-id'] || 'default';
+
+    const result = await issuerCoordinatorAdapter.updateStatus(id, 'VALID', {
+      action: 'reinstate',
+      reason,
+      tenantId
+    });
+
+    res.json(result);
+  } catch (err) {
+    res.status(err.status || 500).json({ error: err.code || 'INTERNAL_ERROR', message: err.message });
+  }
+});
+
+// ── Mock Internal DCC Issuer-Coordinator Routes (For Automated Integration Testing) ──
+
+app.post('/api/v1/internal/mock-coordinator/credentials/issue', (req, res) => {
+  const { credential } = req.body || {};
+  if (!credential) {
+    return res.status(400).json({ error: 'BAD_REQUEST', message: 'Missing credential in payload' });
+  }
+
+  const coordinatorId = `dcc-coord-${uuidv4().slice(0, 8)}`;
+  const signed = {
+    ...credential,
+    id: `urn:uuid:${coordinatorId}`,
+    proof: {
+      type: 'Ed25519Signature2020',
+      created: new Date().toISOString(),
+      verificationMethod: 'did:key:z6MkuMockTenantKey#z6MkuMockTenantKey',
+      proofPurpose: 'assertionMethod',
+      proofValue: 'z3u7fMockCoordinatorSignatureValidProof'
+    }
+  };
+
+  res.status(201).json({
+    id: coordinatorId,
+    credential: signed
+  });
+});
+
+app.post('/api/v1/internal/mock-coordinator/credentials/status', (req, res) => {
+  const { credentialId, status, reason } = req.body || {};
+  res.json({
+    success: true,
+    credentialId,
+    status: status || 'revoked',
+    reason: reason || 'Updated by coordinator',
+    syncedAt: new Date().toISOString()
+  });
+});
+
+app.get('/api/v1/internal/mock-coordinator/status/:listId', (req, res) => {
+  res.json({
+    '@context': ['https://w3id.org/vc/status-list/2021/v1'],
+    id: `${BASE_URL}/api/v1/internal/mock-coordinator/status/${req.params.listId}`,
+    type: 'StatusList2021',
+    statusPurpose: 'revocation',
+    encodedList: 'H4sIC...mockBitstring'
+  });
 });
 
 // Audit log (for authorized operators only)

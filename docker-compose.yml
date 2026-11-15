@@ -116,6 +116,41 @@ services:
     networks:
       - lumo-net
 
+  # Lumo WaaS (Guarantor & Verification as a Service) Node API
+  waas-api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: lumo-waas-api
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - WAAS_PORT=3001
+      - ISSUER_COORDINATOR_URL=http://issuer-coordinator:4005
+      - WAAS_SIGNING_SECRET=${WAAS_SIGNING_SECRET:-waas_demo_secret_2026}
+      - WAAS_AUTH_TOKEN=${WAAS_AUTH_TOKEN:-waas_demo_token_2026}
+    volumes:
+      - waas_data:/app/database
+    networks:
+      - lumo-net
+
+  # DCC Digital Credentials Consortium Issuer Coordinator Service (Isolated)
+  issuer-coordinator:
+    image: digitalcredentials/issuer-coordinator:latest
+    container_name: lumo-issuer-coordinator
+    restart: unless-stopped
+    ports:
+      - "4005:4005"
+    environment:
+      - PORT=4005
+      - NODE_ENV=production
+      - SIGNING_SERVICE_URL=${SIGNING_SERVICE_URL:-http://waas-api:3001/api/v1/internal/mock-coordinator}
+      - STATUS_SERVICE_URL=${STATUS_SERVICE_URL:-http://waas-api:3001/api/v1/internal/mock-coordinator}
+    networks:
+      - lumo-net
+
 networks:
   lumo-net:
     driver: bridge
@@ -123,3 +158,4 @@ networks:
 volumes:
   postgres_data:
   ollama_models:
+  waas_data:

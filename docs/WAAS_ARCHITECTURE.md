@@ -1,6 +1,6 @@
 # Digital WaaS (ዋስ) — System Architecture
 
-**Refugee Guarantor & Institutional Verification Infrastructure**  
+**Refugee Guarantor & Institutional Verification Infrastructure with DCC Issuer Coordinator Integration**  
 *ALX Ethiopia Digital Bridge Hackathon 2026*
 
 ---
@@ -13,194 +13,198 @@
 1. **Zero Exclusion**: Human beings are **never excluded** because they lack a Kebele ID or Fayda ID. The system supports UNHCR refugee registration certificates, trusted partner referrals, and human-in-the-loop manual verification.
 2. **No Numeric Human Scoring**: The system **never ranks or scores human beings** with arbitrary numbers (0–100) or describes individuals as "untrustworthy". Matchmaking is strictly categorical, rule-based, and explainable.
 3. **Data Minimization & Zero Leaks**: Public verification endpoints verify validity and identity claims **without ever exposing** private phone numbers, national identification numbers, or raw identity documents.
-4. **Decentralized & Interoperable**: Issued credentials adhere to the **W3C Verifiable Credentials Data Model v2.0** and **1EdTech Open Badges 3.0** standard with HMAC-SHA256 tamper-evident digital signatures.
+4. **Decentralized & Interoperable**: Issued credentials adhere to the **W3C Verifiable Credentials Data Model v2.0** and **1EdTech Open Badges 3.0** standard with cryptographic digital signatures orchestrated via the Digital Credentials Consortium (DCC) VC-API architecture.
 5. **Universal Integration**: Integrates directly with Lumo Track 2 (`<db-player>` Web Component) and Track 3 (Accessible Telegram Gateway) without backend duplication.
 
 ---
 
-## 2. System Architecture
+## 2. System Architecture Topology
+
+The target architecture isolates the external credential issuance and status coordination components behind an adapter while keeping Lumo's existing SQLite backend and REST API as the authoritative system of record.
 
 ```mermaid
 flowchart TD
     subgraph UI_Layer ["Front-End Embeddable Layer (Shadow DOM / Web Components)"]
-        A["&lt;db-player&gt; (Track 2)"] --- B["&lt;db-waas&gt; (WaaS Plugin)"]
-        B1["1. Applicant Wizard (5 Steps)"]
-        B2["2. Guarantor Dashboard"]
-        B3["3. Employer Verification"]
+        A["<db-player> (Track 2 Playback Engine)"]
+        B["<db-waas> (WaaS Plugin Component)"]
+        B1["1. Applicant Request Wizard"]
+        B2["2. Guarantor Consent & Review Interface"]
+        B3["3. Public Verification Portal"]
         B --- B1
         B --- B2
         B --- B3
     end
 
-    subgraph Channel_Layer ["Multi-Channel Gateways"]
-        TG["Track 3: Telegram Bot Gateway (/waas, /verify)"]
-        WEB["Lumo Career Gateway &amp; Certificate Portal"]
+    subgraph Multi_Channel ["Multi-Channel Gateways"]
+        TG["Track 3: Accessible Telegram Bot (/waas, /verify)"]
+        CAREER["Lumo Career Gateway & Certificate Portal"]
     end
 
-    subgraph Service_Layer ["Dual-Engine Service Layer (Shared Persistence)"]
-        EXPRESS["Node.js Express REST API (:3001)"]
-        FASTAPI["Python FastAPI Gateway (:8000)"]
+    subgraph API_Gateway ["Lumo Application Backend"]
+        REST["Lumo WaaS Express REST API (:3001)"]
+        FAST["Lumo FastAPI Engine (:8000)"]
     end
 
-    subgraph Core_Services ["WaaS Business Logic"]
-        AUTH["Security &amp; Constant-Time Auth"]
-        IDENT["Identity &amp; Non-Exclusionary Ingestion"]
-        MATCH["Explainable Matchmaker (Capacity-Aware)"]
-        CRED["Open Badges 3.0 / W3C VC Signer"]
-        VERIF["Public Status Verifier &amp; Revocation Engine"]
+    subgraph Core_Services ["Lumo Domain Services"]
+        CONSENT["ConsentService (Single-Use Hashed Tokens)"]
+        MATCH["MatchingService (Categorical & Explainable)"]
+        IDENT["IdentityService (Non-Exclusionary Ingestion)"]
+        ADAPTER["IssuerCoordinatorAdapter (Circuit Breaker & VC-API)"]
     end
 
-    subgraph Data_Layer ["Persistence Layer"]
-        SQLITE[("SQLite Embedded Database (waas.db)")]
-        AUDIT[("Immutable Audit Log")]
+    subgraph Coordinator_Boundary ["Isolated DCC Credential Service Boundary"]
+        DCC["DCC Issuer-Coordinator (:4005)"]
+        DCC_SIGN["Isolated Signing Service (VC-API /credentials/issue)"]
+        DCC_STATUS["Isolated Status Service (VC-API /credentials/status)"]
+        LOCAL_ENG["Local Cryptographic Fallback Engine (HMAC-SHA256)"]
     end
 
-    UI_Layer --> EXPRESS
-    UI_Layer --> FASTAPI
-    Channel_Layer --> FASTAPI
-    EXPRESS --> Core_Services
-    FASTAPI --> Core_Services
-    Core_Services --> SQLITE
-    Core_Services --> AUDIT
+    subgraph Persistence ["Persistence Layer"]
+        DB[("SQLite Embedded Database (waas.db)")]
+        AUDIT[("Immutable Audit Trail (audit_log)")]
+    end
+
+    UI_Layer --> REST
+    Multi_Channel --> FAST
+    FAST -.-> DB
+    REST --> CONSENT
+    REST --> MATCH
+    REST --> IDENT
+    REST --> ADAPTER
+    CONSENT --> ADAPTER
+    ADAPTER --> DCC
+    DCC --> DCC_SIGN
+    DCC --> DCC_STATUS
+    ADAPTER -. Circuit Breaker Fallback .-> LOCAL_ENG
+    CONSENT --> DB
+    MATCH --> DB
+    IDENT --> DB
+    ADAPTER --> DB
+    REST --> AUDIT
 ```
 
 ---
 
-## 3. Data Model & Database Schema
+## 3. Single-Use Consent & Issuance Sequence
 
-The system is backed by SQLite (`api/database/waas.db`) with foreign key constraints and indexed lookup fields:
+The consent lifecycle guarantees that credentials cannot be issued prematurely or without unforgeable guarantor consent.
 
 ```mermaid
-erDiagram
-    APPLICANTS ||--o{ WAAS_REQUESTS : "submits"
-    APPLICANTS ||--o{ IDENTITY_VERIFICATIONS : "undergoes"
-    INSTITUTIONAL_GUARANTORS ||--o{ WAAS_REQUESTS : "guarantees"
-    INDIVIDUAL_GUARANTORS ||--o{ WAAS_REQUESTS : "guarantees"
-    WAAS_REQUESTS ||--o| CREDENTIALS : "issues"
-    AUDIT_LOG }o--|| WAAS_REQUESTS : "tracks"
+sequenceDiagram
+    autonumber
+    actor Applicant
+    actor Guarantor
+    participant Component as <db-waas> Web Component
+    participant API as Lumo WaaS API (:3001)
+    participant Consent as ConsentService
+    participant Adapter as IssuerCoordinatorAdapter
+    participant DCC as DCC Issuer Coordinator (:4005)
+    participant DB as SQLite (waas.db)
 
-    APPLICANTS {
-        string id PK
-        string full_name
-        string phone
-        string lang
-        string origin_country
-        string id_route
-        string purpose
-        string course_ref
-        string status
-        timestamp created_at
-    }
+    Applicant->>Component: Fills Guarantee Request (e.g. scholarship)
+    Component->>API: POST /api/waas/requests
+    API->>Consent: createConsentToken(requestId, guarantorId)
+    Consent->>Consent: CSPRNG 256-bit token + SHA-256 hash
+    Consent->>DB: Store token_hash, expires_at (7 days), used=0
+    Consent-->>API: rawToken, consentUrl
+    API-->>Component: requestId, consentToken, consentUrl
+    Applicant->>Guarantor: Shares secure single-use consent URL
 
-    IDENTITY_VERIFICATIONS {
-        string id PK
-        string applicant_id FK
-        string route
-        string status
-        string document_ref
-        string verified_by
-        timestamp created_at
-    }
+    Guarantor->>Component: Opens consent URL
+    Component->>API: GET /api/waas/consent/:token
+    API->>Consent: verifyConsentToken(rawToken)
+    Consent->>DB: Query token_hash (Check used=0 and expiry)
+    Consent-->>API: Request details (Applicant name, purpose, scope)
+    API-->>Component: Render consent review screen
 
-    INSTITUTIONAL_GUARANTORS {
-        string id PK
-        string org_name
-        string registration_ref
-        string contact_email
-        string endorsement_types_json
-        string scope_limitations
-        int verified
-    }
+    Guarantor->>Component: Clicks "Approve Guarantee"
+    Component->>API: POST /api/waas/consent/:token/decide { decision: "approve" }
+    API->>Consent: decideConsent(rawToken, "approve")
+    Consent->>DB: UPDATE consent_tokens SET used=1, used_at=now
+    Consent->>DB: UPDATE waas_requests SET status='approved', consent_guarantor=1
+    Consent->>Adapter: issueCredential(requestId)
+    
+    alt Coordinator Available
+        Adapter->>DCC: POST /credentials/issue (VC-API payload)
+        DCC-->>Adapter: Signed Verifiable Credential
+    else Coordinator Unavailable (Circuit Breaker Tripped)
+        Adapter->>Adapter: Local Cryptographic Fallback Engine
+        Adapter->>Adapter: HMAC-SHA256 tamper-evident proof
+    end
 
-    INDIVIDUAL_GUARANTORS {
-        string id PK
-        string full_name
-        string id_status
-        string references_json
-        string guarantee_types_json
-        int max_active
-        int consent_given
-    }
-
-    WAAS_REQUESTS {
-        string id PK
-        string applicant_id FK
-        string guarantor_type
-        string guarantor_id FK
-        string purpose
-        string scope
-        string status
-        int consent_applicant
-        int consent_guarantor
-        timestamp created_at
-    }
-
-    CREDENTIALS {
-        string id PK
-        string waas_request_id FK
-        string waas_id_public UK
-        string credential_type
-        string beneficiary_ref
-        string guarantor_ref
-        string id_verification_tier
-        string verification_status
-        string issuer
-        string issue_date
-        string expiry_date
-        string signature
-        int revoked
-        string revocation_reason
-    }
+    Adapter->>DB: INSERT INTO credentials (waas_id_public, status='VALID', signature...)
+    Adapter-->>Consent: Issued credential object + QR Code
+    Consent-->>API: Success + credential metadata
+    API-->>Component: Displays congratulations & downloadable reference
 ```
 
 ---
 
-## 4. End-to-End User Journeys
+## 4. Authoritative 6-Status Credential Lifecycle
 
-### Journey 1: Refugee / Displaced Learner Guarantee Request
-1. Learner completes accessible training course on Lumo player (`<db-player>`).
-2. Learner opens `<db-waas>` in `mode="applicant"`.
-3. In Step 1 & 2, enters personal details and selects non-exclusionary ID route:
-   - `refugee_id` (UNHCR / RRS registration card or camp manifest)
-   - `partner_referral` (NGO, community mentor, or educator vouching)
-   - `national_id` (Fayda / Kebele if available; automatic fallback to manual review if unavailable)
-4. In Step 3, reviews and confirms explicit data-sharing consent.
-5. In Step 4, selects matching institution (e.g., ALX Ethiopia Education Partner).
-6. In Step 5, submits request and receives tracking reference (`req_...`).
+Every credential query resolves to one of six authoritative statuses:
 
-### Journey 2: Institutional / Individual Review & Decision
-1. Guarantor representative logs into `<db-waas mode="guarantor">`.
-2. Inspects pending requests filtered by purpose (e.g. `education`, `employment`, `internship`).
-3. Evaluates applicant's verified course completion without accessing private identity documents.
-4. Executes explicit consent decision:
-   - **Approve**: Updates request status to `approved`, sets `consent_guarantor = 1`.
-   - **Decline**: Updates status to `declined` with clear, non-punitive rationale.
+```mermaid
+stateDiagram-v2
+    [*] --> PENDING: Request Created (Awaiting Guarantor Review)
+    PENDING --> DECLINED: Guarantor Declines Request
+    DECLINED --> [*]
+    PENDING --> VALID: Guarantor Approves & Credential Issued
+    VALID --> SUSPENDED: Administrative Audit / Investigation Triggered
+    SUSPENDED --> VALID: Audit Cleared (Reinstated)
+    VALID --> REVOKED: Guarantor or Institution Revokes Commitment
+    SUSPENDED --> REVOKED: Non-compliance Confirmed
+    VALID --> EXPIRED: Expiration Date Surpassed (>365 days)
+    SUSPENDED --> EXPIRED: Expiration Date Surpassed
+    REVOKED --> [*]
+    EXPIRED --> [*]
+    [*] --> INVALID: Malformed WaaS ID or Cryptographic Proof Tampered
+```
 
-### Journey 3: Cryptographic Issuance & Open Badges 3.0 Packaging
-1. WaaS backend issues an Open Badges 3.0 / W3C Verifiable Credential:
-   - Assigns public reference identifier (`WAAS-MWIEKTMQ-70CF8C`).
-   - Signs JSON-LD assertion with HMAC-SHA256 signature.
-   - Generates high-contrast QR Code referencing verification URL.
-   - Records credential in persistent ledger.
-
-### Journey 4: Employer / Public Verification (Zero Leak)
-1. Prospective employer or admissions office scans QR code or accesses `/api/v1/waas/verify/:waasId`.
-2. System computes signature validity, checks expiration, and checks revocation index.
-3. Returns human-readable, accessible verification card:
-   - Status: `VALID`, `REVOKED`, `EXPIRED`, or `INVALID`.
-   - Recipient Name: e.g. "Fatima Ahmed".
-   - Verified Guarantor: e.g. "ALX Ethiopia Education Partner".
-   - Purpose & Scope: "Educational & Professional Reference".
-   - **Zero Privacy Leaks**: Phone numbers, camp locations, and national IDs remain sealed.
+### Verification Status Definitions
+| Status | Meaning | Public `isValid` | Actions Permitted |
+| :--- | :--- | :---: | :--- |
+| **`VALID`** | Active, verified reference signed by authorized guarantor. | `true` | Accepted by employers, universities, banks. |
+| **`SUSPENDED`** | Temporarily frozen during document audit or procedural review. | `false` | Read-only; can be reinstated to `VALID` or escalated to `REVOKED`. |
+| **`REVOKED`** | Terminated by guarantor or admin due to breach or job completion. | `false` | Permanent terminal state; displays audit reason. |
+| **`EXPIRED`** | Credential exceeded validity period (default 1 year). | `false` | Archived; learner can request renewal. |
+| **`PENDING`** | Request logged; consent not yet finalized by guarantor. | `false` | Awaiting guarantor action. |
+| **`INVALID`** | Non-existent record or tampered cryptographic proof. | `false` | Immediate verification rejection. |
 
 ---
 
-## 5. Track 2 and Track 3 Integration
+## 5. Multi-Tenant Architecture & Data Isolation
 
-| Integration Point | Implementation | Purpose |
-| :--- | :--- | :--- |
-| **Track 2 `<db-player>`** | `samples/waas-demo.html` | Embeds `<db-player>` alongside `<db-waas>` with zero CSS or DOM event collisions. |
-| **Track 2 Career Gateway** | `samples/career-gateway.html` | Adds direct action button for job applicants to request institutional guarantor endorsement. |
-| **Track 2 Certificate** | `samples/certificate.html` | Links Open Badges 3.0 certificates to the WaaS verification and guarantor network. |
-| **Track 3 Telegram Bot** | `/waas` in `apps/telegram-bot/` | Displays accredited institutional guarantors to Telegram users with low-bandwidth access. |
-| **Track 3 Telegram Bot** | `/verify <waas_id>` | Verifies authentic credentials directly inside Telegram chat without opening external browsers. |
+Lumo WaaS enforces strict tenant boundaries at the database and API gateway levels:
+
+1. **Tenant Identification**: Inbound requests pass the `X-Tenant-ID` header (e.g. `alx_ethiopia`, `unhcr_partner`, `default`).
+2. **Schema-Level Scoping**:
+   - `waas_requests.tenant_id`: All guarantee requests are owned by an organization tenant.
+   - `institutional_guarantors.tenant_id`: Accreditations are isolated per tenant.
+   - `consent_tokens.tenant_id`: Tokens generated within Tenant A cannot be evaluated or listed within Tenant B.
+   - `credentials.tenant_id`: Issued credentials carry the tenant context.
+   - `organization_admins`: Role-based administrative assignments (`role IN ('admin','reviewer','auditor')`) restricted to authorized tenant records.
+3. **Cross-Tenant Defense**: Any cross-tenant attempt to access request details yields an immediate `403 Forbidden` (`TENANT_MISMATCH`).
+
+---
+
+## 6. Resilient Circuit Breaker Pattern
+
+To prevent external network partitions or downstream microservice restarts from halting educational and employment onboarding, the `IssuerCoordinatorAdapter` implements a stateful Circuit Breaker:
+
+```
+[Incoming Issuance Request]
+            │
+            ▼
+    Is Circuit Breaker Open?
+      ├── YES ──> Fallback to Local Cryptographic Engine (HMAC-SHA256)
+      └── NO  ──> Attempt HTTP POST to DCC Issuer-Coordinator (:4005)
+                     ├── 200 OK  ──> Reset Failures & Return Credential
+                     └── Timeout / 5xx ──> Increment Failure Counter
+                                             │
+                                   Failures >= 3?
+                                     ├── YES ──> Trip Breaker (OPEN for 30s)
+                                     └── NO  ──> Local Cryptographic Engine Fallback
+```
+
+This guarantees 100% service uptime for displaced learners even during localized microservice outages.

@@ -5,7 +5,8 @@ const pa11y = require('pa11y');
   const results = await pa11y('http://127.0.0.1:8000/samples/waas-demo.html', {
     chromeLaunchConfig: {
       executablePath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
+      headless: 'new',
+      args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-gpu', '--headless=new']
     },
     standard: 'WCAG2AA',
     wait: 1500
