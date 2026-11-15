@@ -126,15 +126,16 @@ class DbPlayer extends HTMLElement {
         :host {
           display: block;
           font-family: var(--bs-body-font-family, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
-          color: var(--bs-body-color, #f8fafc);
+          color: var(--bs-body-color, #FAFAF7);
           position: relative;
-          background: #09090b;
+          background: #172B3A;
           border-radius: 8px;
           overflow: hidden;
-          box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6);
+          box-shadow: 0 12px 32px rgba(23, 43, 58, 0.4);
           box-sizing: border-box;
           max-width: 1000px;
           margin: 0 auto;
+          border: 1px solid rgba(232, 239, 242, 0.16);
         }
 
         *, *::before, *::after { box-sizing: border-box; }
@@ -169,15 +170,15 @@ class DbPlayer extends HTMLElement {
 
         .caption-text {
           display: inline-block;
-          background: rgba(0, 0, 0, 0.88);
-          color: #ffffff;
-          padding: 6px 14px;
-          border-radius: 4px;
+          background: rgba(23, 43, 58, 0.94);
+          color: #FAFAF7;
+          padding: 8px 16px;
+          border-radius: 6px;
           font-size: 1.15rem;
           font-weight: 600;
           line-height: 1.6;
-          border: 1px solid rgba(255, 255, 255, 0.2);
-          box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+          border: 1px solid rgba(32, 164, 134, 0.4);
+          box-shadow: 0 4px 16px rgba(0,0,0,0.6);
           font-family: "Noto Sans Ethiopic", system-ui, sans-serif;
         }
 
@@ -192,8 +193,8 @@ class DbPlayer extends HTMLElement {
           right: 20px;
           width: 240px;
           aspect-ratio: 16 / 9;
-          background: #18181b;
-          border: 2px solid #f5a300;
+          background: #172B3A;
+          border: 2px solid #20A486;
           border-radius: 8px;
           display: none;
           z-index: 10;
@@ -210,11 +211,11 @@ class DbPlayer extends HTMLElement {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          background: #27272a;
-          padding: 4px 8px;
+          background: #0e1b25;
+          padding: 6px 10px;
           font-size: 0.75rem;
-          color: #facc15;
-          font-weight: 600;
+          color: #20A486;
+          font-weight: 700;
         }
 
         .esl-snaps {
@@ -223,17 +224,17 @@ class DbPlayer extends HTMLElement {
         }
 
         .snap-btn {
-          background: #3f3f46;
-          color: #fff;
+          background: #243d52;
+          color: #FAFAF7;
           border: none;
           border-radius: 3px;
-          padding: 2px 5px;
-          font-size: 0.7rem;
+          padding: 2px 6px;
+          font-size: 0.75rem;
           cursor: pointer;
         }
 
-        .snap-btn:hover { background: #52525b; }
-        .snap-btn:focus-visible { outline: 2px solid #f5a300; }
+        .snap-btn:hover { background: #20A486; color: #172B3A; }
+        .snap-btn:focus-visible { outline: 2px solid #20A486; }
 
         .esl-window video {
           width: 100%;
@@ -247,11 +248,11 @@ class DbPlayer extends HTMLElement {
           display: flex;
           flex-wrap: wrap;
           gap: 8px;
-          padding: 12px 14px;
-          background: #111827;
-          color: #f9fafb;
+          padding: 12px 16px;
+          background: #172B3A;
+          color: #FAFAF7;
           align-items: center;
-          border-top: 1px solid #1f2937;
+          border-top: 1px solid rgba(232, 239, 242, 0.16);
         }
 
         /* Scrubber & Time */
@@ -266,22 +267,22 @@ class DbPlayer extends HTMLElement {
         input[type="range"].scrubber {
           flex: 1;
           height: 8px;
-          accent-color: #f5a300;
+          accent-color: #20A486;
           cursor: pointer;
         }
 
         .time-badge {
           font-size: 0.85rem;
           font-variant-numeric: tabular-nums;
-          color: #9ca3af;
+          color: #d5e1e7;
           min-width: 90px;
         }
 
         /* Action Buttons */
         button {
-          background: var(--bs-primary, #002b56);
-          color: #ffffff;
-          border: 1px solid rgba(255, 255, 255, 0.15);
+          background: #243d52;
+          color: #FAFAF7;
+          border: 1px solid rgba(232, 239, 242, 0.2);
           border-radius: 6px;
           font: inherit;
           min-height: 44px;
@@ -294,44 +295,47 @@ class DbPlayer extends HTMLElement {
           align-items: center;
           justify-content: center;
           gap: 6px;
-          transition: filter 150ms ease, background-color 150ms ease;
+          transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease;
         }
 
         button:hover {
-          filter: brightness(1.25);
-          background-color: #034080;
+          background-color: #2f4e68;
+          border-color: rgba(232, 239, 242, 0.4);
         }
 
         button:focus-visible {
-          outline: 3px solid #f5a300;
+          outline: 3px solid #20A486;
           outline-offset: 2px;
         }
 
         button[aria-pressed="true"] {
-          background-color: #f5a300;
-          color: #0b1120;
-          border-color: #d97706;
+          background-color: #20A486;
+          color: #172B3A;
+          border-color: #20A486;
+          font-weight: 700;
         }
 
         button#btn-offline {
-          background: #065f46;
-          border-color: #059669;
-          color: #ecfdf5;
+          background: #20A486;
+          border-color: #20A486;
+          color: #172B3A;
+          font-weight: 700;
           margin-left: auto;
         }
 
         button#btn-offline:hover {
-          background: #047857;
+          background: #19876e;
+          color: #ffffff;
         }
 
         /* Transcript Panel */
         .transcript-panel {
           display: none;
           padding: 1rem 1.25rem;
-          background: #1e293b;
-          color: #f8fafc;
-          border-top: 1px solid #334155;
-          max-height: 220px;
+          background: #E8EFF2;
+          color: #172B3A;
+          border-top: 1px solid #d5e1e7;
+          max-height: 240px;
           overflow-y: auto;
         }
 
@@ -349,7 +353,22 @@ class DbPlayer extends HTMLElement {
         .transcript-header h3 {
           margin: 0;
           font-size: 1.1rem;
-          color: #f5a300;
+          color: #172B3A;
+          font-weight: 700;
+        }
+
+        .transcript-header button#btn-dl-text {
+          background: #172B3A;
+          color: #FAFAF7;
+          border: 1px solid #172B3A;
+          border-radius: 4px;
+          min-height: 36px;
+          padding: 4px 12px;
+          font-size: 0.85rem;
+        }
+
+        .transcript-header button#btn-dl-text:hover {
+          background: #243d52;
         }
 
         .transcript-cues {
@@ -359,59 +378,61 @@ class DbPlayer extends HTMLElement {
         }
 
         .cue-item {
-          background: transparent;
-          border: 1px solid transparent;
-          color: #cbd5e1;
+          background: #ffffff;
+          border: 1px solid #d5e1e7;
+          color: #172B3A;
           text-align: left;
-          padding: 6px 10px;
+          padding: 8px 12px;
           border-radius: 4px;
           font-size: 0.9rem;
           cursor: pointer;
           min-height: auto;
           display: flex;
           gap: 12px;
+          transition: background 120ms ease;
         }
 
         .cue-item:hover {
-          background: #334155;
-          color: #ffffff;
+          background: #f4f8fa;
+          border-color: #20A486;
         }
 
         .cue-item:focus-visible {
-          outline: 2px solid #f5a300;
+          outline: 2px solid #20A486;
         }
 
         .cue-item.current {
-          background: rgba(245, 163, 0, 0.15);
-          border-color: #f5a300;
-          color: #facc15;
+          background: rgba(32, 164, 134, 0.15);
+          border-color: #20A486;
+          color: #172B3A;
           font-weight: 700;
         }
 
         .cue-time {
-          color: #94a3b8;
+          color: #485b6a;
           font-size: 0.8rem;
+          font-weight: 600;
           min-width: 45px;
         }
 
         /* Keyboard Help Dialog */
         dialog#help-dialog {
-          border: 2px solid #f5a300;
+          border: 2px solid #20A486;
           border-radius: 8px;
           padding: 24px;
-          background: #18181b;
-          color: #f8fafc;
+          background: #172B3A;
+          color: #FAFAF7;
           box-shadow: 0 20px 40px rgba(0,0,0,0.85);
           max-width: 480px;
           width: 90%;
         }
 
         dialog#help-dialog::backdrop {
-          background: rgba(0, 0, 0, 0.75);
+          background: rgba(23, 43, 58, 0.8);
         }
 
         dialog#help-dialog h2 {
-          color: #f5a300;
+          color: #20A486;
           margin: 0 0 1rem;
           font-size: 1.35rem;
         }
@@ -424,18 +445,19 @@ class DbPlayer extends HTMLElement {
         }
 
         dialog#help-dialog th, dialog#help-dialog td {
-          padding: 6px 8px;
+          padding: 8px 10px;
           text-align: left;
-          border-bottom: 1px solid #27272a;
+          border-bottom: 1px solid rgba(232, 239, 242, 0.16);
         }
 
         kbd {
-          background: #27272a;
+          background: #E8EFF2;
           padding: 2px 6px;
           border-radius: 4px;
-          border: 1px solid #3f3f46;
+          border: 1px solid #d5e1e7;
           font-family: monospace;
-          color: #facc15;
+          color: #172B3A;
+          font-weight: 600;
         }
 
         /* Screen Reader Live Announcer */

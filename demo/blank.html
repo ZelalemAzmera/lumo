@@ -7,38 +7,46 @@
   <!-- 1. Load the module -->
   <script src="../module/db-player.js" defer></script>
   <style>
-    /* Intentionally minimal raw HTML page: no Bootstrap, no Savanna CSS */
+    /* Midnight & Jade theme: Minimal host page with zero external framework */
+    :root {
+      --primary: #172B3A;
+      --secondary: #E8EFF2;
+      --accent: #20A486;
+      --neutral: #FAFAF7;
+    }
     body {
-      font-family: system-ui, -apple-system, sans-serif;
-      background: #121214;
-      color: #e4e4e7;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--neutral);
+      color: var(--primary);
       margin: 0;
-      padding: 40px 20px;
+      padding: 48px 24px;
       line-height: 1.6;
     }
     .container {
-      max-width: 900px;
+      max-width: 960px;
       margin: 0 auto;
     }
     h1 {
-      font-size: 1.75rem;
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
       margin-bottom: 8px;
-      color: #ffffff;
+      color: var(--primary);
     }
     p.note {
-      color: #a1a1aa;
-      margin-bottom: 24px;
-      font-size: 0.95rem;
+      color: #485b6a;
+      margin-bottom: 28px;
+      font-size: 1rem;
     }
     .event-logger {
       margin-top: 24px;
       padding: 16px;
-      background: #18181b;
-      border: 1px solid #27272a;
+      background: var(--primary);
+      border: 1px solid rgba(232, 239, 242, 0.2);
       border-radius: 6px;
-      font-family: monospace;
+      font-family: ui-monospace, 'JetBrains Mono', Consolas, monospace;
       font-size: 0.85rem;
-      color: #facc15;
+      color: var(--accent);
     }
   </style>
 </head>
