@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lumo (ሉሞ) — Accessible Media & Digital WaaS (ዋስ) Integration Demo</title>
+
+  <!-- Google Fonts: Manrope, Inter, Noto Sans Ethiopic -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&family=Noto+Sans+Ethiopic:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Load Web Components: Canonical DB-Player and WaaS Plugin -->
+  <script type="module" src="../module/db-player.js"></script>
+  <script type="module" src="../module/db-waas.js"></script>
+
+  <style>
+    /* Strict Four-Color Midnight & Jade System */
+    :root {
+      --primary: #172B3A;          /* Deep Navy */
+      --secondary: #E8EFF2;        /* Mist Grey */
+      --secondary-dark: #d2dee4;
+      --accent: #20A486;           /* Jade Green */
+      --accent-hover: #19876e;
+      --neutral: #FAFAF7;          /* Soft Ivory */
+
+      --text-main: #172B3A;
+      --text-muted: #4e616f;
+      --focus-ring: #20A486;
+
+      --font-heading: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-fidel: 'Noto Sans Ethiopic', var(--font-body);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--neutral);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      line-height: 1.6;
+      padding: 0;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top navigation bar */
+    .top-nav {
+      background: var(--primary);
+      color: var(--neutral);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid var(--accent);
+    }
+
+    .brand-title {
+      font-family: var(--font-heading);
+      font-size: 1.25rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .brand-badge {
+      background: var(--accent);
+      color: var(--primary);
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .nav-link {
+      color: var(--secondary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      padding: 0.4rem 0.8rem;
+      border-radius: 4px;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .nav-link:hover, .nav-link:focus-visible {
+      background: rgba(232, 239, 242, 0.15);
+      color: #ffffff;
+      outline: 2px solid var(--accent);
+    }
+
+    /* Page container */
+    .container {
+      max-width: 72rem; /* 1152px */
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+    }
+
+    .hero-header {
+      margin-bottom: 2.5rem;
+    }
+
+    .hero-header h1 {
+      font-family: var(--font-heading);
+      font-size: 2.25rem;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+      line-height: 1.25;
+    }
+
+    .hero-header p {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      max-width: 50rem;
+    }
+
+    /* Architecture Highlights Banner */
+    .arch-banner {
+      background: var(--secondary);
+      border: 1px solid var(--secondary-dark);
+      border-left: 4px solid var(--accent);
+      padding: 1.25rem 1.5rem;
+      border-radius: 6px;
+      margin-bottom: 2.5rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .arch-item h2 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.25rem;
+    }
+
+    .arch-item p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* Section styling */
+    .section-card {
+      background: #ffffff;
+      border: 1px solid var(--secondary-dark);
+      border-radius: 8px;
+      padding: 2rem;
+      margin-bottom: 2.5rem;
+      box-shadow: 0 4px 16px rgba(23, 43, 58, 0.04);
+    }
+
+    .section-title {
+      font-family: var(--font-heading);
+      font-size: 1.5rem;
+      color: var(--primary);
+      margin-bottom: 0.35rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .section-desc {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+    }
+
+    /* Mode selector tabs for WaaS */
+    .mode-tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      border-bottom: 2px solid var(--secondary);
+      padding-bottom: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .tab-btn:hover {
+      background: var(--secondary);
+      color: var(--primary);
+    }
+
+    .tab-btn.active {
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    .tab-btn:focus-visible {
+      outline: 2px solid var(--focus-ring);
+      outline-offset: 2px;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--secondary-dark);
+      padding: 2rem 1.5rem;
+      text-align: center;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      background: var(--secondary);
+      margin-top: 3rem;
+    }
+
+    .footer-links {
+      margin-top: 0.5rem;
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+    }
+
+    .footer-links a {
+      color: var(--primary);
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .footer-links a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation -->
+  <nav class="top-nav" aria-label="Main Navigation">
+    <div class="brand-title">
+      <span>Lumo (ሉሞ)</span>
+      <span class="brand-badge">WaaS Enabled</span>
+    </div>
+    <div class="nav-links">
+      <a href="savanna-demo.html" class="nav-link">Savanna Platform</a>
+      <a href="career-gateway.html" class="nav-link">Career Gateway</a>
+      <a href="certificate.html" class="nav-link">Certificate Verification</a>
+      <a href="test-harness.html" class="nav-link">A11y Test Harness</a>
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <!-- Hero Header -->
+    <header class="hero-header">
+      <h1>Accessible Learning Media &amp; Verifiable Guarantor Infrastructure</h1>
+      <p>
+        Digital Bridge Hackathon 2026 · Track 2 (Accessible Learning Experience) and WaaS (Guarantor and Verification as a Service) unified in a single zero-conflict architecture.
+      </p>
+    </header>
+
+    <!-- Architecture Guarantees -->
+    <div class="arch-banner" role="region" aria-label="System Guarantees">
+      <div class="arch-item">
+        <h2>🔒 Zero Exclusion</h2>
+        <p>Refugees &amp; displaced students without Fayda or Kebele IDs verify via UNHCR certs or trusted institutional referrals.</p>
+      </div>
+      <div class="arch-item">
+        <h2>🛡️ Data Minimization</h2>
+        <p>Public verification never leaks phone numbers, national IDs, or raw identity documents. Only verifiable statuses are returned.</p>
+      </div>
+      <div class="arch-item">
+        <h2>📜 Open Badges 3.0</h2>
+        <p>W3C Verifiable Credential standard compliant with HMAC-SHA256 tamper-evident cryptographic signatures.</p>
+      </div>
+      <div class="arch-item">
+        <h2>♿ WCAG 2.2 AA</h2>
+        <p>Built with Shadow DOM style isolation, keyboard trap protection, ARIA live announcements, and high contrast Midnight &amp; Jade palette.</p>
+      </div>
+    </div>
+
+    <!-- SECTION 1: Track 2 Canonical Accessible Player -->
+    <section class="section-card" aria-labelledby="track2-heading">
+      <h2 id="track2-heading" class="section-title">
+        <span>🎬</span> Track 2: Canonical Accessible Player (&lt;db-player&gt;)
+      </h2>
+      <p class="section-desc">
+        Complete multi-modal learning experience: synchronized Ethiopian Sign Language (EthSL) video overlay, Amharic Fidel WebVTT subtitles, audio description track, and full keyboard navigation.
+      </p>
+
+      <db-player
+        src="test-lesson.mp4"
+        captions="captions-en.vtt,captions-am.vtt"
+        sign="lesson.ethsl.mp4"
+        describe="lesson.ad.mp3"
+        lang="am"
+        title="Inclusive Digital Skills — Web Accessibility Foundations">
+      </db-player>
+    </section>
+
+    <!-- SECTION 2: WaaS Guarantor & Verification Plugin -->
+    <section class="section-card" aria-labelledby="waas-heading">
+      <h2 id="waas-heading" class="section-title">
+        <span>🤝</span> WaaS Plugin: Guarantor &amp; Verification as a Service (&lt;db-waas&gt;)
+      </h2>
+      <p class="section-desc">
+        A reusable trust and consent infrastructure embedded into educational platforms. Learners request educational or employment guarantees, verified institutions review and approve, and employers verify credentials without surveillance or human ranking scores.
+      </p>
+
+      <!-- Mode Switcher Tabs -->
+      <div class="mode-tabs" role="tablist" aria-label="WaaS Component Views">
+        <button class="tab-btn active" role="tab" id="tab-applicant" aria-selected="true" data-mode="applicant">
+          1. Applicant Guarantee Wizard
+        </button>
+        <button class="tab-btn" role="tab" id="tab-guarantor" aria-selected="false" data-mode="guarantor">
+          2. Guarantor Review Dashboard
+        </button>
+        <button class="tab-btn" role="tab" id="tab-employer" aria-selected="false" data-mode="employer">
+          3. Public Employer Verification
+        </button>
+      </div>
+
+      <!-- Embedded WaaS Web Component -->
+      <div id="waas-wrapper">
+        <db-waas
+          id="live-waas-component"
+          api="http://localhost:3001"
+          mode="applicant"
+          lang="en"
+          theme="light">
+        </db-waas>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <p>Lumo (ሉሞ) — Open-Source Accessibility Infrastructure for Digital Learning Platforms</p>
+    <div class="footer-links">
+      <a href="https://github.com/ZelalemAzmera/lumo" target="_blank" rel="noopener">GitHub Repository</a>
+      <a href="../docs/WAAS_ARCHITECTURE.md">WaaS Architecture</a>
+      <a href="../docs/WAAS_SECURITY.md">Security &amp; Privacy Audit</a>
+      <a href="../docs/WAAS_API.md">API Reference</a>
+    </div>
+  </footer>
+
+  <!-- Interactivity Script for Tabs -->
+  <script>
+    const tabs = document.querySelectorAll('.tab-btn');
+    const waasComp = document.getElementById('live-waas-component');
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => {
+          t.classList.remove('active');
+          t.setAttribute('aria-selected', 'false');
+        });
+        tab.classList.add('active');
+        tab.setAttribute('aria-selected', 'true');
+
+        const mode = tab.getAttribute('data-mode');
+        if (waasComp) {
+          waasComp.setAttribute('mode', mode);
+        }
+      });
+    });
+
+    // Listen for custom events dispatched by <db-waas>
+    waasComp.addEventListener('db-waas:request-created', (e) => {
+      console.log('[Demo Host] Guarantee request created:', e.detail);
+    });
+
+    waasComp.addEventListener('db-waas:credential-issued', (e) => {
+      console.log('[Demo Host] WaaS Credential issued:', e.detail);
+    });
+  </script>
+</body>
+</html>

@@ -38,6 +38,25 @@ class MatchingService {
     }
   };
 
+  static PURPOSE_SYNONYMS = {
+    education: ['education', 'scholarship', 'tuition', 'school', 'university', 'course', 'training', 'learning', 'academic', 'fellowship'],
+    employment: ['employment', 'job', 'work', 'internship', 'career', 'apprenticeship', 'placement'],
+    accommodation: ['accommodation', 'housing', 'shelter', 'living', 'rent'],
+    training: ['training', 'certification', 'bootcamp', 'upskilling', 'education', 'skills', 'scholarship']
+  };
+
+  _purposeMatches(types, requestedPurpose) {
+    if (!types || types.length === 0) return true;
+    if (!requestedPurpose) return true;
+    const req = requestedPurpose.toLowerCase().trim();
+    return types.some(type => {
+      const t = type.toLowerCase().trim();
+      if (t === req || t.includes(req) || req.includes(t)) return true;
+      const synonyms = MatchingService.PURPOSE_SYNONYMS[t] || [];
+      return synonyms.some(s => s === req || s.includes(req) || req.includes(s));
+    });
+  }
+
   /**
    * Find matching guarantors for a WaaS request.
    */
@@ -138,13 +157,16 @@ class MatchingService {
       .filter(g => g.active_commitments < g.max_active)
       .map(g => {
         const types = JSON.parse(g.guarantee_types_json || '[]');
-        const purposeMatch = types.length === 0 || types.includes(request.purpose);
+        const purposeMatch = this._purposeMatches(types, request.purpose);
         return {
           id: g.id,
           type: 'individual',
           name: g.full_name,
           availableCapacity: g.max_active - g.active_commitments,
           purposeMatch,
+          matchReason: purposeMatch
+            ? 'Individual guarantor is verified with available endorsement capacity'
+            : 'Guarantor preferences differ from requested purpose',
           eligibilityReason: purposeMatch
             ? 'Guarantor is eligible and has available capacity'
             : 'Guarantor available but purpose type may not match their preferences'
@@ -165,13 +187,16 @@ class MatchingService {
 
     return guarantors.map(g => {
       const types = JSON.parse(g.endorsement_types_json || '[]');
-      const purposeMatch = types.length === 0 || types.includes(request.purpose);
+      const purposeMatch = this._purposeMatches(types, request.purpose);
       return {
         id: g.id,
         type: 'institutional',
         name: g.org_name,
         purposeMatch,
         scopeLimitations: g.scope_limitations,
+        matchReason: purposeMatch
+          ? 'Institution is accredited and supports this category of endorsement'
+          : 'Institution accredited but outside requested scope',
         eligibilityReason: purposeMatch
           ? 'Organization is verified and endorses this type of purpose'
           : 'Organization verified but may not cover this purpose type'

@@ -65,5 +65,17 @@ class LumoAPIClient:
             resp.raise_for_status()
             return resp.content
 
+    async def verify_waas_credential(self, waas_id: str) -> Dict[str, Any]:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            resp = await client.get(f"{self.base_url}/waas/verify/{waas_id}", headers=self.headers)
+            resp.raise_for_status()
+            return resp.json()
+
+    async def list_waas_guarantors(self) -> Dict[str, Any]:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            resp = await client.get(f"{self.base_url}/waas/guarantors", headers=self.headers)
+            resp.raise_for_status()
+            return resp.json()
+
 
 api_client = LumoAPIClient()

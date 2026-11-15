@@ -10,6 +10,7 @@ from app.api.v1.captions import router as captions_router
 from app.api.v1.documents import router as documents_router
 from app.api.v1.packages import router as packages_router
 from app.api.v1.lessons import router as lessons_router
+from app.api.v1.waas import router as waas_router
 
 app = FastAPI(
     title="Lumo Accessibility Infrastructure API",
@@ -56,6 +57,7 @@ for prefix in ["/v1", "/api/v1"]:
     app.include_router(documents_router, prefix=prefix, tags=["Documents"])
     app.include_router(packages_router, prefix=prefix, tags=["Offline Packages"])
     app.include_router(lessons_router, prefix=prefix, tags=["AI Educator"])
+    app.include_router(waas_router, prefix=prefix, tags=["WaaS (Guarantor as a Service)"])
 
 @app.get("/v1/openapi.json", include_in_schema=False)
 async def openapi_v1():

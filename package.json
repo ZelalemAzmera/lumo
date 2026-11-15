@@ -8,6 +8,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:python": "python -m pytest services/api/tests apps/telegram-bot/tests",
+    "test:waas": "node api/test-waas.js",
+    "test:waas:pa11y": "node tests/test_waas_pa11y.cjs",
     "test:a11y": "playwright test tests/e2e/a11y-gate.spec.ts",
     "test:pa11y": "node tests/test_pa11y.cjs",
     "test:all": "pnpm test && pnpm test:python && pnpm test:a11y",

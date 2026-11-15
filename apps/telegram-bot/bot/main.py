@@ -10,7 +10,9 @@ from .handlers import (
     caption_handler,
     ask_handler,
     offline_handler,
-    job_handler
+    job_handler,
+    waas_handler,
+    verify_handler
 )
 
 logging.basicConfig(
@@ -31,6 +33,8 @@ def build_application():
     app.add_handler(CommandHandler("ask", ask_handler))
     app.add_handler(CommandHandler("offline", offline_handler))
     app.add_handler(CommandHandler("job", job_handler))
+    app.add_handler(CommandHandler("waas", waas_handler))
+    app.add_handler(CommandHandler("verify", verify_handler))
 
     return app
 

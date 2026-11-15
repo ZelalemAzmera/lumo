@@ -15,6 +15,18 @@ Lumo is an open, embeddable accessibility infrastructure module that equips exis
 
 ---
 
+## Digital WaaS (ዋስ) — Refugee Guarantor & Verification Plugin
+Lumo now includes **Digital WaaS (ዋስ)** — an embeddable guarantor, consent, and credential verification infrastructure for refugees, displaced students, and learners who lack traditional collateral, credit histories, or Kebele/Fayda national IDs:
+
+- **Zero-Exclusion Guarantee**: Supports alternative verification routes (UNHCR registration certificates, trusted partner referrals, manual verification). Human beings are **never excluded** or penalized for lacking government IDs.
+- **Explainable Matching (No Human Scoring)**: Strictly prohibits numeric trust scores (0–100) or describing people as untrustworthy. Matches are explainable and rule-based.
+- **Data Minimization (Zero Leaks)**: Public verification endpoints confirm credential authenticity without exposing private phone numbers, camp locations, or raw identity documents.
+- **Open Badges 3.0 & W3C VC Compliant**: Issues cryptographically signed (HMAC-SHA256) Verifiable Credentials with high-contrast QR codes and tamper-evident verification.
+- **Universal Multi-Channel Integration**: Works via embeddable Web Component (`<db-waas>`), live REST APIs (Node.js `:3001` and Python FastAPI `:8000`), and low-bandwidth Telegram bot (`/waas`, `/verify`).
+- **Interactive Integration Demo**: Explore [`samples/waas-demo.html`](samples/waas-demo.html) demonstrating `<db-player>` and `<db-waas>` running side-by-side with zero CSS or DOM collisions.
+
+---
+
 ## The main task we tested
 > **"A blind learner on NVDA and a deaf learner using Ethiopian Sign Language navigate, play, adjust captions, and study an ALX Savanna lesson independently on their own devices with zero external help."**
 
@@ -44,11 +56,17 @@ Then open:
 # 1. Run all unit tests (Vitest: 6 test suites, 20/20 passed)
 pnpm test
 
-# 2. Run Python API & Telegram bot tests (Pytest: 17/17 passed)
+# 2. Run Python API, WaaS backend & Telegram bot tests (Pytest: 21/21 passed)
 pnpm test:python
 
-# 3. Run automated WCAG 2.2 AA accessibility audit (Playwright + axe-core: 0 violations)
+# 3. Run WaaS end-to-end integration test suite (Node.js: 40/40 assertions passed)
+pnpm test:waas
+
+# 4. Run automated WCAG 2.2 AA accessibility audit on core player (Playwright + axe-core: 0 violations)
 pnpm test:a11y
+
+# 5. Run automated WCAG 2.2 AA Pa11y audit on integrated WaaS & Player portal (0 violations)
+pnpm test:waas:pa11y
 
 # Or run all suites in sequence:
 pnpm run test:all

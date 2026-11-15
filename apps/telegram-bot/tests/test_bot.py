@@ -17,7 +17,9 @@ from bot.handlers import (
     lesson_handler,
     caption_handler,
     ask_handler,
-    job_handler
+    job_handler,
+    waas_handler,
+    verify_handler
 )
 
 
@@ -155,3 +157,57 @@ async def test_job_handler():
     sent_text = mock_message.reply_text.call_args[0][0]
     assert "Career Gateway" in sent_text
     assert "Inclusive Workplace Accommodations" in sent_text
+
+
+@pytest.mark.asyncio
+async def test_waas_handler():
+    mock_update = MagicMock(spec=Update)
+    mock_message = AsyncMock(spec=Message)
+    mock_update.message = mock_message
+
+    mock_client = MagicMock()
+    mock_client.list_waas_guarantors = AsyncMock(return_value={
+        "institutions": [{"name": "ALX Ethiopia Education Partner", "scope": "Accredited education partner"}]
+    })
+
+    mock_context = MagicMock(spec=CallbackContext)
+    mock_context.bot_data = {"api_client": mock_client}
+
+    await waas_handler(mock_update, mock_context)
+    mock_message.reply_text.assert_called_once()
+    sent_text = mock_message.reply_text.call_args[0][0]
+    assert "Digital WaaS" in sent_text
+    assert "ALX Ethiopia Education Partner" in sent_text
+
+
+@pytest.mark.asyncio
+async def test_verify_handler():
+    mock_update = MagicMock(spec=Update)
+    mock_message = AsyncMock(spec=Message)
+    mock_update.message = mock_message
+
+    mock_client = MagicMock()
+    mock_client.verify_waas_credential = AsyncMock(return_value={
+        "isValid": True,
+        "status": "VALID",
+        "subject": {"name": "Fatima Ahmed"},
+        "credential": {
+            "issuer": "ALX Education Partner",
+            "purpose": "Scholarship",
+            "issuedAt": "2026-01-01T00:00:00Z",
+            "expiresAt": "2027-01-01T00:00:00Z"
+        },
+        "signatureValid": True
+    })
+
+    mock_context = MagicMock(spec=CallbackContext)
+    mock_context.args = ["WAAS-2026-ALX-001"]
+    mock_context.bot_data = {"api_client": mock_client}
+
+    await verify_handler(mock_update, mock_context)
+    mock_message.reply_text.assert_called_once()
+    sent_text = mock_message.reply_text.call_args[0][0]
+    assert "WaaS Credential Verification" in sent_text
+    assert "Fatima Ahmed" in sent_text
+    assert "VALID" in sent_text
+    assert "HMAC-SHA256" in sent_text

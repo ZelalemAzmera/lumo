@@ -12,5 +12,8 @@ __pycache__
 Thumbs.db
 test-results
 playwright-report
+*.db
+*.sqlite
+api/public/qr/*.png
 !packages/embed-sdk/dist/
 

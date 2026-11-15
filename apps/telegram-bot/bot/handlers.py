@@ -56,6 +56,8 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
         "• `/ask <question>` — Ask the AI Educator questions grounded in the lesson\n"
         "• `/offline <id>` — Download complete offline HTML lesson package (<10MB)\n"
         "• `/job <id>` — View accessible job posting from Career Gateway\n"
+        "• `/waas` — Learn about the Refugee & Student Guarantor Network\n"
+        "• `/verify <id>` — Verify an authentic Open Badges 3.0 guarantor reference\n"
         "• `/help` — Screen reader tips and accessibility guide\n\n"
         "_Tip: Try typing_ `/lesson web101` _or_ `/caption web101` _to start!_"
     )
@@ -253,3 +255,85 @@ async def job_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
         f"🔗 *Apply online:* https://career.lumo.education/jobs/{job_id}"
     )
     await update.message.reply_text(job_text, parse_mode=ParseMode.MARKDOWN)
+
+
+async def waas_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Handles /waas command explaining the guarantor network and showing verified partners."""
+    if not update.message:
+        return
+    
+    try:
+        client = context.bot_data.get("api_client", api_client)
+        data = await client.list_waas_guarantors()
+        institutions = data.get("institutions", [])
+        
+        partner_lines = []
+        for inst in institutions[:5]:
+            partner_lines.append(f"• *{inst.get('name')}*\n  Scope: _{inst.get('scope', 'Accredited guarantor')}_")
+        
+        partners_str = "\n".join(partner_lines) if partner_lines else "• ALX Ethiopia Education Partner\n• Refugee Digital Integration Initiative"
+        
+        waas_text = (
+            "🤝 *Digital WaaS (ዋስ) — Refugee & Student Guarantor Network*\n"
+            "━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+            "WaaS provides accessible, verifiable institutional guarantees and references "
+            "for displaced learners, refugees, and students without traditional collateral or national IDs.\n\n"
+            "🏛 *Verified Institutional Guarantors:*\n"
+            f"{partners_str}\n\n"
+            "📋 *How it works:*\n"
+            "1. Complete a verified Lumo track (e.g. ALX AI Foundations).\n"
+            "2. Request an educational reference via the Lumo web portal.\n"
+            "3. An accredited partner reviews your accomplishments and issues an Open Badges 3.0 cryptographic reference.\n"
+            "4. Share your reference ID with employers or academic institutions!\n\n"
+            "🔍 *To verify an existing reference:*\n"
+            "Type `/verify <WaaS-ID>` (e.g. `/verify WAAS-EXAMPLE-123`)"
+        )
+        await update.message.reply_text(waas_text, parse_mode=ParseMode.MARKDOWN)
+    except Exception as e:
+        await update.message.reply_text(f"⚠️ Could not load guarantor directory: {str(e)}")
+
+
+async def verify_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Handles /verify <waas_id> for public credential verification."""
+    if not update.message:
+        return
+    
+    args = context.args or []
+    if not args:
+        await update.message.reply_text(
+            "ℹ️ *Usage:* `/verify <WaaS-ID>`\n"
+            "Example: `/verify WAAS-2026-ALX-001`\n\n"
+            "This checks whether an educational or employment guarantor reference is authentic, active, or revoked.",
+            parse_mode=ParseMode.MARKDOWN
+        )
+        return
+    
+    waas_id = args[0].strip()
+    try:
+        client = context.bot_data.get("api_client", api_client)
+        result = await client.verify_waas_credential(waas_id)
+        
+        status_symbol = "✅" if result.get("isValid") else "❌"
+        status_text = result.get("status", "UNKNOWN")
+        subject = result.get("subject", {}).get("name", "Verified Learner")
+        cred = result.get("credential", {})
+        issuer = cred.get("issuer", "WaaS Platform")
+        purpose = cred.get("purpose", "Education & Employment")
+        issued_at = (cred.get("issuedAt") or "N/A")[:10]
+        expires_at = (cred.get("expiresAt") or "N/A")[:10]
+        
+        verify_message = (
+            f"{status_symbol} *WaaS Credential Verification*\n"
+            f"━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"🆔 *Reference ID:* `{waas_id}`\n"
+            f"📊 *Status:* *{status_text}*\n"
+            f"👤 *Recipient:* {subject}\n"
+            f"🏛 *Issuer:* {issuer}\n"
+            f"🎯 *Purpose:* {purpose}\n"
+            f"📅 *Issued:* {issued_at} | *Expires:* {expires_at}\n\n"
+            f"🔐 *Cryptographic Signature:* {'Verified (HMAC-SHA256)' if result.get('signatureValid') else 'Unverified'}\n"
+            f"🛡 _Zero-leak privacy: Personal identification documents and phone numbers are kept private._"
+        )
+        await update.message.reply_text(verify_message, parse_mode=ParseMode.MARKDOWN)
+    except Exception as e:
+        await update.message.reply_text(f"⚠️ Verification lookup failed: {str(e)}")
