@@ -209,7 +209,7 @@
       btnDownloadPack.addEventListener('click', async () => {
         btnDownloadPack.textContent = '⏳ Packaging (<10MB)...';
         try {
-          const res = await fetch('http://localhost:8000/api/v1/packages/generate', {
+          const res = await fetch('/api/v1/packages/generate', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -222,7 +222,7 @@
           });
           if (res.ok) {
             const data = await res.json();
-            window.location.href = `http://localhost:8000${data.download_url}`;
+            window.location.href = data.download_url;
           } else {
             alert('Package generated! You can also download direct via /samples/test-harness.html');
           }

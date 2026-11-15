@@ -20,7 +20,7 @@ app = FastAPI(
     version=settings.VERSION,
     docs_url="/docs",
     redoc_url="/redoc",
-    openapi_url="/v1/openapi.json",
+    openapi_url="/openapi.json",
     license_info={
         "name": "MIT License",
         "url": "https://opensource.org/licenses/MIT"
@@ -49,12 +49,18 @@ async def add_process_time_and_request_id(request: Request, call_next):
     response.headers["X-Process-Time"] = f"{process_time:.4f}s"
     return response
 
-# Mount v1 Routers
-app.include_router(health_router, prefix="/v1", tags=["Health"])
-app.include_router(captions_router, prefix="/v1", tags=["Captions"])
-app.include_router(documents_router, prefix="/v1", tags=["Documents"])
-app.include_router(packages_router, prefix="/v1", tags=["Offline Packages"])
-app.include_router(lessons_router, prefix="/v1", tags=["AI Educator"])
+# Mount v1 Routers (Support both /v1 and /api/v1 for standard and rewritten paths)
+for prefix in ["/v1", "/api/v1"]:
+    app.include_router(health_router, prefix=prefix, tags=["Health"])
+    app.include_router(captions_router, prefix=prefix, tags=["Captions"])
+    app.include_router(documents_router, prefix=prefix, tags=["Documents"])
+    app.include_router(packages_router, prefix=prefix, tags=["Offline Packages"])
+    app.include_router(lessons_router, prefix=prefix, tags=["AI Educator"])
+
+@app.get("/v1/openapi.json", include_in_schema=False)
+async def openapi_v1():
+    return app.openapi()
+
 
 @app.get("/")
 async def root():
@@ -62,5 +68,5 @@ async def root():
         "message": "Welcome to Lumo Accessibility API. Interactive docs available at /docs.",
         "version": settings.VERSION,
         "docs_url": "/docs",
-        "openapi_url": "/v1/openapi.json"
+        "openapi_url": "/openapi.json"
     }

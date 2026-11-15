@@ -1,17 +1,49 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "cleanUrls": true,
   "services": {
-    "web": {
-      "root": ".",
-      "framework": null,
-      "buildCommand": "echo 'Lumo static assets ready'"
+    "api": {
+      "root": "services/api",
+      "framework": "fastapi"
+    },
+    "telegram-bot": {
+      "root": "apps/telegram-bot",
+      "runtime": "python",
+      "entrypoint": "bot/webhook.py",
+      "bindings": [
+        {
+          "type": "service",
+          "service": "api",
+          "format": "url",
+          "env": "LUMO_API_INTERNAL_URL"
+        }
+      ]
     }
   },
-  "cleanUrls": true,
   "rewrites": [
     {
-      "source": "/(.*)",
-      "destination": { "service": "web" }
+      "source": "/bot/(.*)",
+      "destination": {
+        "service": "telegram-bot"
+      }
+    },
+    {
+      "source": "/api/(.*)",
+      "destination": {
+        "service": "api"
+      }
+    },
+    {
+      "source": "/docs",
+      "destination": {
+        "service": "api"
+      }
+    },
+    {
+      "source": "/openapi.json",
+      "destination": {
+        "service": "api"
+      }
     }
   ]
 }
