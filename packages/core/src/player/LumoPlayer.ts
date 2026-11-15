@@ -23,10 +23,18 @@ export class LumoPlayer extends HTMLElement {
       'src',
       'poster',
       'title',
+      'lang',
+      'captions',
+      'captions-src',
       'captions-en',
       'captions-am',
+      'sign',
       'esl-src',
+      'describe',
+      'ad-src',
       'audio-description-src',
+      'theme',
+      'caption-size',
       'offline-enabled'
     ];
   }
@@ -518,18 +526,29 @@ export class LumoPlayer extends HTMLElement {
       case 'title':
         if (newValue && this.container) this.container.setAttribute('aria-label', newValue);
         break;
+      case 'captions':
+      case 'captions-src':
+        if (newValue) {
+          const parts = newValue.split(',').map((s: string) => s.trim());
+          if (parts[0]) this.captionRenderer?.loadTrack('en', parts[0]);
+          if (parts[1]) this.captionRenderer?.loadTrack('am', parts[1]);
+        }
+        break;
       case 'captions-en':
         if (newValue) this.captionRenderer?.loadTrack('en', newValue);
         break;
       case 'captions-am':
         if (newValue) this.captionRenderer?.loadTrack('am', newValue);
         break;
+      case 'sign':
       case 'esl-src':
         if (newValue) {
           this.eslWindow?.setSource(newValue);
           if (this.btnESL) this.btnESL.style.display = 'inline-flex';
         }
         break;
+      case 'describe':
+      case 'ad-src':
       case 'audio-description-src':
         if (newValue) {
           this.adController?.setSources(this.getAttribute('src') || '', newValue);

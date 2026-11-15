@@ -23,6 +23,24 @@ def test_captions_auth_failure():
     response = client.post("/v1/captions/generate", json={"media_url": "https://example.com/video.mp4"})
     assert response.status_code == 401
 
+def test_security_rejects_arbitrary_lumo_prefix():
+    # Vulnerability fix verification: arbitrary key with lumo_ prefix MUST be rejected
+    response = client.post(
+        "/v1/captions/generate",
+        json={"media_url": "https://example.com/video.mp4", "language": "am"},
+        headers={"X-Lumo-Key": "lumo_attacker_arbitrary_key_12345"}
+    )
+    assert response.status_code == 401
+    assert response.json()["detail"]["code"] == "INVALID_API_KEY"
+
+def test_security_accepts_valid_provisioned_key():
+    response = client.post(
+        "/v1/captions/generate",
+        json={"media_url": "https://example.com/video.mp4", "language": "am"},
+        headers={"X-Lumo-Key": "alx_savanna_tenant_key_2026"}
+    )
+    assert response.status_code == 202
+
 def test_captions_generation_success():
     response = client.post(
         "/v1/captions/generate",
